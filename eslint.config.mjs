@@ -1,7 +1,10 @@
 import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
 import hooks from "eslint-plugin-react-hooks";
 import a11y from "eslint-plugin-jsx-a11y";
-export default tseslint.config(
+import { plugin as shadcn } from "@shadcn/lint";
+
+export default defineConfig(
   {
     ignores: [
       "**/dist/**",
@@ -23,7 +26,7 @@ export default tseslint.config(
   },
   {
     files: ["apps/web/src/**/*.{ts,tsx}"],
-    plugins: { "react-hooks": hooks, "jsx-a11y": a11y },
+    plugins: { "react-hooks": hooks, "jsx-a11y": a11y, shadcn },
     rules: {
       ...hooks.configs.recommended.rules,
       ...a11y.configs.recommended.rules,
