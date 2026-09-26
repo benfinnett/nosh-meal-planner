@@ -7,7 +7,12 @@ import {
   jsonSchemaTransform,
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
-import { healthSchema, statusSchema, errorSchema } from "@nosh/contracts";
+import {
+  healthSchema,
+  statusSchema,
+  errorSchema,
+  recipeSummariesSchema,
+} from "@nosh/contracts";
 import type { Store } from "./db/index.js";
 
 export async function createApp(store: Store, development = false) {
@@ -70,5 +75,12 @@ export async function createApp(store: Store, development = false) {
     );
 
   app.addHook("onClose", async () => store.close());
+
+  app.get(
+    "/api/recipes",
+    { schema: { response: { 200: recipeSummariesSchema, 500: errorSchema } } },
+    async () => ({ recipes: store.recipeSummaries() }),
+  );
+
   return app;
 }

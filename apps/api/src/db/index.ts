@@ -4,7 +4,7 @@ import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { mkdirSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { count, eq } from "drizzle-orm";
+import { asc, count, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import {
   recipeDietary,
@@ -176,6 +176,21 @@ export function openStore(path: string) {
 
     close() {
       sqlite.close();
+    },
+
+    recipeSummaries() {
+      return db
+        .select({
+          id: recipes.id,
+          name: recipes.name,
+          cuisine: recipes.cuisine,
+          serves: recipes.serves,
+        })
+        .from(recipes)
+        .where(isNull(recipes.archivedAt))
+        .orderBy(asc(recipes.id))
+        .limit(20)
+        .all();
     },
   };
 }

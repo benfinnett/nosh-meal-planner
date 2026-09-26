@@ -1,4 +1,17 @@
-import { statusSchema } from "@nosh/contracts";
+import { recipeSummariesSchema, statusSchema } from "@nosh/contracts";
+
+export async function fetchRecipeSummaries({
+  signal,
+}: { signal?: AbortSignal } = {}) {
+  const response = await fetch("/api/recipes", { signal });
+  if (!response.ok) throw new Error("The recipe API is unavailable.");
+
+  const parsed = recipeSummariesSchema.safeParse(await response.json());
+  if (!parsed.success)
+    throw new Error("The API returned an unexpected response.");
+
+  return parsed.data.recipes;
+}
 
 export async function fetchStatus() {
   const response = await fetch("/api/dev/status");
