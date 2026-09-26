@@ -64,7 +64,7 @@ For schema changes, see [Database Migrations](docs/DATABASE-MIGRATIONS.md) for g
 ## Architecture
 
 ```text
-apps/web             React/Vite, Tailwind, shadcn-style Radix/CVA button, Tabler
+apps/web             React/Vite, Tailwind, Base UI/CVA button, Tabler
 packages/contracts   Shared Zod DTOs (no application or database dependencies)
 apps/api             Fastify app factory and HTTP server, Drizzle/SQLite adapter
 apps/api/migrations  Versioned SQL, tracked atomically in SQLite
