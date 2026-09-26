@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--surface);
+  --color-foreground: var(--color-nosh-charcoal);
+  --color-card: var(--paper);
+  --color-card-foreground: var(--color-nosh-charcoal);
+  --color-popover: var(--paper);
+  --color-popover-foreground: var(--color-nosh-charcoal);
+  --color-primary: var(--color-nosh-green);
+  --color-primary-foreground: var(--color-nosh-charcoal);
+  --color-secondary: var(--paper);
+  --color-secondary-foreground: var(--color-nosh-charcoal);
+  --color-muted: var(--surface);
+  --color-muted-foreground: var(--ink-muted);
+  --color-accent: var(--color-nosh-leaf);
+  --color-accent-foreground: var(--color-nosh-charcoal);
+  --color-destructive: var(--danger);
+  --color-border: var(--rule);
+  --color-input: var(--control-border);
+  --color-ring: var(--focus);
+  --font-sans: "Nunito Sans", Arial, sans-serif;
+  --font-display: Nunito, Arial, sans-serif;
+  --radius-sm: calc(var(--radius) - 0.125rem);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 0.125rem);
+}
+
+:root {
+  --color-nosh-green: #62cc9b;
+  --color-nosh-teal: #3aa58f;
+  --color-nosh-charcoal: #2e373e;
+  --color-nosh-coral: #f3764b;
+  --color-nosh-leaf: #d5c52d;
+  --color-nosh-cloud: #b7bfc0;
+  --surface: #faf9f5;
+  --paper: #ffffff;
+  --ink-muted: #59645d;
+  --rule: #d5d9d2;
+  --control-border: #7b867e;
+  --danger: #9a3e2d;
+  --focus: #185e52;
+  color: var(--color-nosh-charcoal);
+  font-family: "Nunito Sans", Arial, sans-serif;
+  font-synthesis: none;
+  background: var(--surface);
+}
+
+body {
+  position: relative;
+}
+
+#root {
+  isolation: isolate;
+}

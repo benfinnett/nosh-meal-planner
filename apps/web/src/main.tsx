@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "@fontsource/nunito/latin-700.css";
 import "@fontsource/nunito-sans/latin-400.css";
 import "@fontsource/nunito-sans/latin-600.css";
@@ -21,7 +22,9 @@ ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <QueryClientProvider client={client}>
       <BrowserRouter>
-        <App />
+        <TooltipProvider>
+          <App />
+        </TooltipProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>,
