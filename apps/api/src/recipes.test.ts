@@ -13,13 +13,17 @@ describe("recipe summaries", () => {
       const { recipes } = response.json();
       expect(recipes).toHaveLength(20);
       expect(recipes[0]).toEqual({
-        id: expect.any(String), name: expect.any(String),
-        cuisine: expect.any(String), serves: expect.any(Number),
+        id: expect.any(String),
+        name: expect.any(String),
+        cuisine: expect.any(String),
+        serves: expect.any(Number),
       });
       expect(recipes.map((recipe: { id: string }) => recipe.id)).toEqual(
         [...recipes.map((recipe: { id: string }) => recipe.id)].sort(),
       );
-      expect((await app.inject("/api/recipes")).json()).toEqual(response.json());
+      expect((await app.inject("/api/recipes")).json()).toEqual(
+        response.json(),
+      );
     } finally {
       await app.close();
     }
@@ -28,7 +32,9 @@ describe("recipe summaries", () => {
   it("returns an empty list for an unseeded store", async () => {
     const app = await createApp(openStore(":memory:"));
     try {
-      expect((await app.inject("/api/recipes")).json()).toEqual({ recipes: [] });
+      expect((await app.inject("/api/recipes")).json()).toEqual({
+        recipes: [],
+      });
     } finally {
       await app.close();
     }

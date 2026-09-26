@@ -6,7 +6,12 @@ import { CuisineFlag } from "./CuisineFlag";
 
 afterEach(cleanup);
 
-it.each(["mediterranean", "unknown", ""])("uses a globe for %s instead of an arbitrary country", (cuisine) => {
-  render(<CuisineFlag cuisine={cuisine} />);
-  expect(screen.getByRole("img", { name: "Regional or unspecified cuisine" })).toBeInTheDocument();
-});
+it.each(["mediterranean", "unknown", ""])(
+  "uses a globe for %s instead of an arbitrary country",
+  (cuisine) => {
+    render(<CuisineFlag cuisine={cuisine} />);
+    expect(
+      screen.getByRole("img", { name: "Regional or unspecified cuisine" }),
+    ).toBeInTheDocument();
+  },
+);

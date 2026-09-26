@@ -28,22 +28,15 @@
           "name": "recipe_dietary_recipe_id_recipes_id_fk",
           "tableFrom": "recipe_dietary",
           "tableTo": "recipes",
-          "columnsFrom": [
-            "recipe_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["recipe_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "recipe_dietary_recipe_id_dietary_pk": {
-          "columns": [
-            "recipe_id",
-            "dietary"
-          ],
+          "columns": ["recipe_id", "dietary"],
           "name": "recipe_dietary_recipe_id_dietary_pk"
         }
       },
@@ -102,22 +95,15 @@
           "name": "recipe_ingredients_recipe_id_recipes_id_fk",
           "tableFrom": "recipe_ingredients",
           "tableTo": "recipes",
-          "columnsFrom": [
-            "recipe_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["recipe_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "recipe_ingredients_recipe_id_position_pk": {
-          "columns": [
-            "recipe_id",
-            "position"
-          ],
+          "columns": ["recipe_id", "position"],
           "name": "recipe_ingredients_recipe_id_position_pk"
         }
       },
@@ -153,22 +139,15 @@
           "name": "recipe_meal_types_recipe_id_recipes_id_fk",
           "tableFrom": "recipe_meal_types",
           "tableTo": "recipes",
-          "columnsFrom": [
-            "recipe_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["recipe_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "recipe_meal_types_recipe_id_meal_type_pk": {
-          "columns": [
-            "recipe_id",
-            "meal_type"
-          ],
+          "columns": ["recipe_id", "meal_type"],
           "name": "recipe_meal_types_recipe_id_meal_type_pk"
         }
       },
@@ -206,22 +185,15 @@
           "name": "recipe_method_steps_recipe_id_recipes_id_fk",
           "tableFrom": "recipe_method_steps",
           "tableTo": "recipes",
-          "columnsFrom": [
-            "recipe_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["recipe_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "recipe_method_steps_recipe_id_position_pk": {
-          "columns": [
-            "recipe_id",
-            "position"
-          ],
+          "columns": ["recipe_id", "position"],
           "name": "recipe_method_steps_recipe_id_position_pk"
         }
       },
@@ -257,22 +229,15 @@
           "name": "recipe_tags_recipe_id_recipes_id_fk",
           "tableFrom": "recipe_tags",
           "tableTo": "recipes",
-          "columnsFrom": [
-            "recipe_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["recipe_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "recipe_tags_recipe_id_tag_pk": {
-          "columns": [
-            "recipe_id",
-            "tag"
-          ],
+          "columns": ["recipe_id", "tag"],
           "name": "recipe_tags_recipe_id_tag_pk"
         }
       },
