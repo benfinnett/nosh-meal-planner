@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+node_modules
+dist
+project-nosh-sample-recipes.json
+test-results
+playwright-report
+.pnpm-store

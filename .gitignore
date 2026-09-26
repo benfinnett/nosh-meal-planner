@@ -1,0 +1,13 @@
+Project Information.pptx
+*.md
+!README.md
+node_modules/
+dist/
+.env
+.env.*
+data/
+*.sqlite*
+test-results/
+playwright-report/
+coverage/
+.pnpm-store/
