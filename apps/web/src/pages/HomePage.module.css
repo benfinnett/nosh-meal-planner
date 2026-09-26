@@ -1,0 +1,250 @@
+.sectionHeading {
+  display: flex;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sectionLink {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.recipeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.recipeCard {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border: 1px solid var(--rule);
+  border-top: 4px solid var(--color-nosh-green);
+  border-radius: var(--radius-lg);
+  background: var(--paper);
+}
+
+.recipeCard:nth-child(3n + 2) {
+  border-top-color: var(--color-nosh-leaf);
+}
+
+.recipeCard:nth-child(3n) {
+  border-top-color: var(--color-nosh-coral);
+}
+
+.recipeTopline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.recipeNumber {
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+.recipeCuisineIcons {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recipeCard p {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  color: var(--ink-muted);
+  font-size: 0.875rem;
+}
+
+.recipeServings {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+
+.recipeServingIcons {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.recipeServingIcons svg {
+  flex-shrink: 0;
+}
+
+.feedMessage {
+  padding: 24px 0;
+  border-block: 1px solid var(--rule);
+}
+
+.retryButton {
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--color-nosh-charcoal);
+  border-radius: var(--radius);
+  background: var(--color-nosh-green);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.recipeSkeleton {
+  display: block;
+  border-radius: 3px;
+  background: var(--rule);
+  animation: skeletonPulse 1.8s ease-in-out infinite;
+}
+
+.skeletonNumber {
+  width: 24px;
+  height: 14px;
+}
+
+.skeletonIcons {
+  width: 64px;
+  height: 28px;
+}
+
+.skeletonTitle {
+  width: 85%;
+  height: 1.5rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.skeletonDetails {
+  width: 65%;
+  height: 1rem;
+  margin: 1rem 0 0.5rem;
+}
+
+@keyframes skeletonPulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.coverage {
+  display: grid;
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 2px solid var(--color-nosh-charcoal);
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.dayBars {
+  display: grid;
+  margin: 16px 0;
+  padding: 0;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 12px;
+  list-style: none;
+}
+
+.dayBars li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+.barTrack {
+  display: flex;
+  width: 100%;
+  max-width: 36px;
+  height: 108px;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.barTrack > span {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--control-border);
+  border-radius: 2px;
+  background: #edf0eb;
+}
+
+.dayLabel {
+  text-decoration: none;
+}
+
+.chartLegend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-muted);
+  font-size: 0.8rem;
+}
+
+.chartLegend > span {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--control-border);
+  border-radius: 2px;
+  background: #edf0eb;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recipeSkeleton {
+    animation: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .recipeGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .recipeCard {
+    padding: 14px;
+  }
+
+  .recipeCard h3 {
+    font-size: 1.05rem;
+    overflow-wrap: anywhere;
+  }
+
+  .sectionHeading h1 {
+    font-size: 1.2rem;
+  }
+
+  .sectionLink {
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .coverage {
+    margin-top: 32px;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .dayBars {
+    gap: 9px;
+  }
+}
+
+@media (max-width: 350px) {
+  .recipeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .recipeCard {
+    padding: 16px;
+  }
+
+  .recipeCard h3 {
+    font-size: 1.15rem;
+  }
+}

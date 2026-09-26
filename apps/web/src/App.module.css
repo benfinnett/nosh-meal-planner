@@ -1,0 +1,121 @@
+.skipLink {
+  position: fixed;
+  top: -100px;
+  left: 1rem;
+  z-index: 10;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: white;
+}
+
+.skipLink:focus {
+  top: 1rem;
+}
+
+.masthead {
+  background: var(--color-nosh-charcoal);
+}
+
+.mastheadContent {
+  display: flex;
+  max-width: 1120px;
+  margin: auto;
+  padding: 28px 32px;
+  align-items: center;
+  gap: 16px;
+}
+
+.logoIcon,
+.logoText {
+  display: block;
+  height: auto;
+}
+
+.logoIcon {
+  width: 50px;
+}
+
+.logoText {
+  width: 148px;
+}
+
+.tagline {
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+}
+
+.page {
+  max-width: 1120px;
+  margin: auto;
+  padding: 40px 32px calc(120px + env(safe-area-inset-bottom));
+}
+
+.bottomNav {
+  position: fixed;
+  z-index: 5;
+  inset-inline: 0;
+  bottom: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--surface) 50%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.bottomNavItems {
+  display: grid;
+  max-width: 640px;
+  margin: auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.bottomNavLink {
+  display: flex;
+  min-height: 76px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-top: 3px solid transparent;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+.bottomNavLink[aria-current="page"],
+.bottomNavLink:hover {
+  background: color-mix(in srgb, var(--color-nosh-green) 5%, transparent);
+}
+
+.bottomNavLink[aria-current="page"] {
+  border-top-color: var(--color-nosh-charcoal);
+  background: color-mix(in srgb, var(--color-nosh-green) 10%, transparent);
+}
+
+@media (max-width: 700px) {
+  .mastheadContent {
+    padding: 26px 24px;
+  }
+
+  .tagline {
+    display: none;
+  }
+
+  .logoIcon {
+    width: 44px;
+  }
+
+  .logoText {
+    width: 128px;
+  }
+
+  .page {
+    padding: 28px 20px calc(112px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 350px) {
+  .page {
+    padding-inline: 16px;
+  }
+}

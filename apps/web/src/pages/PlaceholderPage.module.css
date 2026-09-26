@@ -1,0 +1,12 @@
+.page {
+  padding-block: 32px;
+}
+
+.backLink {
+  display: inline-flex;
+  min-height: 44px;
+  margin-top: 24px;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
