@@ -16,11 +16,13 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:a11y": "playwright test --config accessibility.playwright.config.ts",
     "db:generate": "pnpm --filter @nosh/api db:generate",
     "db:seed": "pnpm --filter @nosh/api db:seed",
     "db:reset": "pnpm --filter @nosh/api db:reset"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^20.5.3",
     "@playwright/test": "1.63.0",
