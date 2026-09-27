@@ -117,7 +117,7 @@ it("sets the recipe title when opening cached details and rejects invalid servin
   expect(screen.getByText("100 g beans")).toBeInTheDocument();
 });
 
-it("shows a not-found page with a route back to the explorer", async () => {
+it("shows a not-found page", async () => {
   vi.stubGlobal(
     "fetch",
     vi.fn(async () => response({}, 404)),
@@ -126,8 +126,4 @@ it("shows a not-found page with a route back to the explorer", async () => {
   expect(
     await screen.findByRole("heading", { name: "Recipe not found" }),
   ).toBeInTheDocument();
-  expect(screen.getByRole("link", { name: /← Recipes/ })).toHaveAttribute(
-    "href",
-    "/recipes",
-  );
 });

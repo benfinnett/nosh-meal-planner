@@ -7,6 +7,7 @@ import { label } from "@/lib/recipe-navigation";
 import { CuisineFlag } from "@/components/CuisineFlag";
 import { Button } from "@/components/ui/button";
 import styles from "./Recipes.module.css";
+import { IconArrowLeft } from "@tabler/icons-react";
 
 function RecipeContent({ recipe }: { recipe: RecipeDetail }) {
   const [servings, setServings] = useState(String(recipe.serves));
@@ -145,10 +146,14 @@ export default function RecipeDetailPage() {
     <section className={styles.page}>
       {location.state?.fromExplorer ? (
         <Button variant="text" onClick={() => navigate(-1)}>
-          ← Back to recipes
+          <IconArrowLeft size={18} aria-hidden="true" />
+          Recipes
         </Button>
       ) : (
-        <Link to="/recipes">← Recipes</Link>
+        <Button variant="text" render={<Link to="/recipes" />}>
+          <IconArrowLeft size={18} aria-hidden="true" />
+          Recipes
+        </Button>
       )}
       {query.isPending && <p role="status">Loading recipe…</p>}
       {query.isError && (

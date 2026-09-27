@@ -11,6 +11,7 @@ import { label } from "@/lib/recipe-navigation";
 import { Button } from "@/components/ui/button";
 import { UnsavedRecipeGuard } from "@/components/UnsavedRecipeGuard";
 import styles from "./Recipes.module.css";
+import { IconArrowLeft } from "@tabler/icons-react";
 
 let rowId = 0;
 function ingredientRow() {
@@ -142,7 +143,10 @@ export default function CreateRecipePage() {
   return (
     <section className={styles.page}>
       <UnsavedRecipeGuard dirty={dirty && !mutation.isSuccess} />
-      <Link to="/recipes">← Recipes</Link>
+      <Button variant="text" render={<Link to="/recipes" />}>
+        <IconArrowLeft size={18} aria-hidden="true" />
+        Recipes
+      </Button>
       <h1>Create recipe</h1>
       <p>Add a recipe that works for your kitchen.</p>
       <form
