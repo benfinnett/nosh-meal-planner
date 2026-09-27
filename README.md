@@ -1,5 +1,7 @@
 # Nosh
 
+[![CI status](https://github.com/benfinnett/nosh-meal-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/benfinnett/nosh-meal-planner/actions/workflows/ci.yml)
+
 ## Run the demo with Docker
 
 Install Docker Desktop/Engine with Compose and start its Linux engine. From this repository:
