@@ -109,6 +109,10 @@ const queryValues = z
   .optional();
 export const catalogueQuerySchema = z.object({
   q: z.string().trim().max(200).optional(),
+  mine: z
+    .enum(["true"])
+    .transform(() => true)
+    .optional(),
   dietary: queryValues,
   cuisine: queryValues,
   mealType: queryValues,

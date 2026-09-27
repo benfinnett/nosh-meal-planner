@@ -152,6 +152,25 @@ it("honours URL filters and loads another page without losing the first", async 
   ).toBe(true);
 });
 
+it("filters recipes to the current user's recipes", async () => {
+  const fetch = mockApi((url) => ({
+    recipes: url.searchParams.get("mine") === "true" ? [detail] : [card],
+    total: 1,
+    nextCursor: null,
+  }));
+  mount("/recipes?dietary=");
+  await screen.findByRole("link", { name: "Bean soup" });
+
+  fireEvent.click(screen.getByLabelText("My recipes"));
+
+  await waitFor(() =>
+    expect(fetch.mock.calls.some(([url]) => url.includes("mine=true"))).toBe(
+      true,
+    ),
+  );
+  expect(screen.getByTestId("location")).toHaveTextContent("mine=true");
+});
+
 it("scales to household and arbitrary servings, preserves null quantities, and resets", async () => {
   const fetch = mockApi();
   mount("/recipes/soup");

@@ -79,6 +79,7 @@ export default function RecipesPage() {
 
   const requestParams = new URLSearchParams();
   if (urlSearch) requestParams.set("q", urlSearch);
+  if (params.get("mine") === "true") requestParams.set("mine", "true");
   for (const category of categories) {
     [...new Set(params.getAll(category).filter(Boolean))]
       .sort()
@@ -143,6 +144,13 @@ export default function RecipesPage() {
     setControlParams(next);
     setParams(next);
   }
+  function setMine(selected: boolean) {
+    const next = new URLSearchParams(params);
+    if (selected) next.set("mine", "true");
+    else next.delete("mine");
+    setControlParams(next);
+    setParams(next);
+  }
   const choices = {
     dietary: [...dietaryPreferences],
     cuisine: options.data?.cuisines ?? [],
@@ -152,6 +160,18 @@ export default function RecipesPage() {
   function filters() {
     return (
       <div className={styles.filterGroups}>
+        <fieldset>
+          <legend>Recipe ownership</legend>
+          <label className={styles.check}>
+            <input
+              type="checkbox"
+              aria-label="My recipes"
+              checked={controlParams.get("mine") === "true"}
+              onChange={(event) => setMine(event.target.checked)}
+            />
+            My recipes
+          </label>
+        </fieldset>
         {categories.map((category) => (
           <fieldset key={category}>
             <legend>{titles[category]}</legend>
@@ -228,6 +248,15 @@ export default function RecipesPage() {
         </p>
       )}
       <div className={styles.actions}>
+        {params.get("mine") === "true" && (
+          <Button
+            variant="secondary"
+            aria-label="Remove My recipes filter"
+            onClick={() => setMine(false)}
+          >
+            My recipes ×
+          </Button>
+        )}
         {categories.flatMap((category) =>
           params
             .getAll(category)
@@ -315,7 +344,10 @@ export default function RecipesPage() {
                   </Button>
                 ) : (
                   cards.length > 0 && (
-                    <p>You’ve reached the end of the recipes. Why not create your own?</p>
+                    <p>
+                      You’ve reached the end of the recipes. Why not create your
+                      own?
+                    </p>
                   )
                 )}
               </div>

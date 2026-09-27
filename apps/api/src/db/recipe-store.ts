@@ -63,6 +63,7 @@ export function recipeStore(sqlite: Database.Database) {
     recipeCatalogue(query: CatalogueQuery) {
       const predicates = ["r.archived_at IS NULL"];
       const params: (string | number)[] = [];
+      if (query.mine) predicates.push("r.source = 'user'");
       if (query.q) {
         predicates.push("instr(lower(r.name), lower(?)) > 0");
         params.push(query.q);

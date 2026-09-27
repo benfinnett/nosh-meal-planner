@@ -59,6 +59,25 @@ describe("recipe catalogue HTTP API", () => {
     });
   });
 
+  it("filters the catalogue to user recipes", async () => {
+    const store = openStore(":memory:");
+    store.seed();
+    const app = await createApp(store);
+    apps.push(app);
+    const created = await app.inject({
+      method: "POST",
+      url: "/api/recipes",
+      payload: recipe,
+    });
+    const list = await app.inject("/api/recipes/catalogue?mine=true");
+
+    expect(list.statusCode).toBe(200);
+    expect(list.json()).toMatchObject({
+      total: 1,
+      recipes: [{ id: created.json().id, name: recipe.name }],
+    });
+  });
+
   it("rejects invalid creation without a partial recipe and validates pagination", async () => {
     const app = await setup();
     for (const invalid of [
