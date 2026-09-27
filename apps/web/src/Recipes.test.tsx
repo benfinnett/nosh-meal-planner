@@ -27,6 +27,7 @@ const detail = {
   dietary: ["vegan", "vegetarian", "gluten-free", "dairy-free"],
   ingredients: [
     { item: "beans", quantity: 250, unit: "g", prep: "drained" },
+    { item: "pepper", quantity: 10.5, unit: "g", prep: null },
     { item: "salt", quantity: null, unit: null, prep: null },
   ],
   method: ["Simmer the beans."],
@@ -194,15 +195,17 @@ it("scales to household and arbitrary servings, preserves null quantities, and r
     ),
   ).toBeInTheDocument();
   expect(screen.getByText(/250 g/)).toBeInTheDocument();
+  expect(screen.getByText(/11 g pepper/)).toBeInTheDocument();
   fireEvent.click(
     await screen.findByRole("button", { name: "Use household size" }),
   );
   expect(screen.getByLabelText("Servings")).toHaveValue(3);
-  expect(screen.getByText(/187.5 g/)).toBeInTheDocument();
+  expect(screen.getByText(/188 g/)).toBeInTheDocument();
   fireEvent.change(screen.getByLabelText("Servings"), {
     target: { value: "1" },
   });
-  expect(screen.getByText(/62.5 g/)).toBeInTheDocument();
+  expect(screen.getByText(/63 g beans/)).toBeInTheDocument();
+  expect(screen.getByText(/2.63 g pepper/)).toBeInTheDocument();
   expect(screen.getByText("salt")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Reset to original" }));
   expect(screen.getByText(/250 g/)).toBeInTheDocument();
@@ -220,9 +223,7 @@ it("validates creation, preserves input on failure, and saves ordered rows", asy
       : { ok: true, data: { ...detail, id: "custom", source: "user" } };
   });
   mount("/recipes/new");
-  await waitFor(() =>
-    expect(screen.getByLabelText("Servings")).toHaveValue(3),
-  );
+  await waitFor(() => expect(screen.getByLabelText("Servings")).toHaveValue(3));
   fireEvent.click(screen.getByRole("button", { name: "Save recipe" }));
   expect(await screen.findByText("Enter a recipe name.")).toBeInTheDocument();
   fireEvent.change(screen.getByLabelText("Recipe name"), {
