@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { IconArrowRight } from "@tabler/icons-react";
 import { fetchCatalogue } from "@/lib/api";
 import { RecipeGrid, RecipeSkeleton } from "@/components/RecipeCard";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import styles from "./HomePage.module.css";
 
 const days = [
@@ -41,12 +41,10 @@ function HomePage() {
       <section aria-labelledby="inspiration-title">
         <div className={styles.sectionHeading}>
           <h1 id="inspiration-title">What’s on the menu?</h1>
-          <Link
-            to="/recipes"
-            className={`${buttonVariants({ variant: "text" })} ${styles.sectionLink}`}
-          >
-            View more <IconArrowRight size={18} aria-hidden="true" />
-          </Link>
+          <Button variant="text" render={<Link to="recipes" />}>
+            View more
+            <IconArrowRight size={18} aria-hidden="true" />
+          </Button>
         </div>
         {recipes.isPending && <RecipeSkeleton />}
         {recipes.isError && (

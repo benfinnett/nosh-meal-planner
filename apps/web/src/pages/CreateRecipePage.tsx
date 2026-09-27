@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type SubmitEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -11,7 +11,16 @@ import { label } from "@/lib/recipe-navigation";
 import { Button } from "@/components/ui/button";
 import { UnsavedRecipeGuard } from "@/components/UnsavedRecipeGuard";
 import styles from "./Recipes.module.css";
-import { IconArrowLeft } from "@tabler/icons-react";
+import {
+  IconArrowDown,
+  IconArrowLeft,
+  IconArrowUp,
+  IconCarrot,
+  IconPlus,
+  IconTag,
+  IconTrash,
+  IconX,
+} from "@tabler/icons-react";
 
 let rowId = 0;
 function ingredientRow() {
@@ -97,7 +106,7 @@ export default function CreateRecipePage() {
     setTagInput("");
     setDirty(true);
   }
-  function submit(event: FormEvent) {
+  function submit(event: SubmitEvent) {
     event.preventDefault();
     if (mutation.isPending) return;
     const result = createRecipeSchema.safeParse({
@@ -260,6 +269,7 @@ export default function CreateRecipePage() {
               {error("tags")}
             </label>
             <Button type="button" variant="secondary" onClick={addTag}>
+              <IconTag aria-hidden="true" />
               Add tag
             </Button>
           </div>
@@ -280,7 +290,8 @@ export default function CreateRecipePage() {
                   setDirty(true);
                 }}
               >
-                {label(tag)} ×
+                {label(tag)}
+                <IconX aria-hidden="true" />
               </Button>
             ))}
           </div>
@@ -343,7 +354,8 @@ export default function CreateRecipePage() {
                     setDirty(true);
                   }}
                 >
-                  ↑ Move up
+                  <IconArrowUp aria-hidden="true" />
+                  Move up
                 </Button>
                 <Button
                   type="button"
@@ -355,11 +367,12 @@ export default function CreateRecipePage() {
                     setDirty(true);
                   }}
                 >
-                  ↓ Move down
+                  <IconArrowDown aria-hidden="true" />
+                  Move down
                 </Button>
                 <Button
                   type="button"
-                  variant="text"
+                  variant="text-error"
                   disabled={ingredients.length === 1}
                   aria-label={`Remove ingredient ${index + 1}`}
                   onClick={() => {
@@ -369,6 +382,7 @@ export default function CreateRecipePage() {
                     setDirty(true);
                   }}
                 >
+                  <IconTrash aria-hidden="true" />
                   Remove
                 </Button>
               </div>
@@ -383,6 +397,7 @@ export default function CreateRecipePage() {
               setDirty(true);
             }}
           >
+            <IconCarrot aria-hidden="true" />
             Add ingredient
           </Button>
         </fieldset>
@@ -419,7 +434,8 @@ export default function CreateRecipePage() {
                     setDirty(true);
                   }}
                 >
-                  ↑ Move up
+                  <IconArrowUp size={18} aria-hidden="true" />
+                  Move up
                 </Button>
                 <Button
                   type="button"
@@ -431,11 +447,12 @@ export default function CreateRecipePage() {
                     setDirty(true);
                   }}
                 >
-                  ↓ Move down
+                  <IconArrowDown size={18} aria-hidden="true" />
+                  Move down
                 </Button>
                 <Button
                   type="button"
-                  variant="text"
+                  variant="text-error"
                   disabled={method.length === 1}
                   aria-label={`Remove step ${index + 1}`}
                   onClick={() => {
@@ -443,6 +460,7 @@ export default function CreateRecipePage() {
                     setDirty(true);
                   }}
                 >
+                  <IconTrash aria-hidden="true" />
                   Remove
                 </Button>
               </div>
@@ -457,6 +475,7 @@ export default function CreateRecipePage() {
               setDirty(true);
             }}
           >
+            <IconPlus aria-hidden="true" />
             Add step
           </Button>
         </fieldset>

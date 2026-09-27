@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import type { ReactNode } from "react";
 import { IconUser, IconUsers } from "@tabler/icons-react";
 import type { RecipeCard as RecipeCardData } from "@nosh/contracts";
 import { CuisineFlag } from "./CuisineFlag";
@@ -9,7 +10,13 @@ import {
 } from "@/lib/recipe-navigation";
 import styles from "./RecipeCard.module.css";
 
-export function RecipeCard({ recipe }: { recipe: RecipeCardData }) {
+export function RecipeCard({
+  recipe,
+  action,
+}: {
+  recipe: RecipeCardData;
+  action?: ReactNode;
+}) {
   const location = useLocation();
   return (
     <article className={styles.recipeCard}>
@@ -54,33 +61,46 @@ export function RecipeCard({ recipe }: { recipe: RecipeCardData }) {
           {recipe.name}
         </Link>
       </h3>
-      {!!(recipe.dietary.length || recipe.tags.length) && (
-        <ul
-          className={styles.tags}
-          aria-label="Dietary requirements and recipe tags"
-        >
-          {recipe.dietary.map((requirement) => (
-            <li className={styles.dietaryTag} key={`dietary-${requirement}`}>
-              {dietaryShortLabel(requirement)}
-            </li>
-          ))}
-          {[...recipe.tags]
-            .sort()
-            .slice(0, 3)
-            .map((tag) => (
-              <li key={`tag-${tag}`}>{label(tag)}</li>
+      <div className={styles.recipeFooter}>
+        {!!(recipe.dietary.length || recipe.tags.length) && (
+          <ul
+            className={styles.tags}
+            aria-label="Dietary requirements and recipe tags"
+          >
+            {recipe.dietary.map((requirement) => (
+              <li className={styles.dietaryTag} key={`dietary-${requirement}`}>
+                {dietaryShortLabel(requirement)}
+              </li>
             ))}
-        </ul>
-      )}
+            {[...recipe.tags]
+              .sort()
+              .slice(0, 3)
+              .map((tag) => (
+                <li key={`tag-${tag}`}>{label(tag)}</li>
+              ))}
+          </ul>
+        )}
+        {action}
+      </div>
     </article>
   );
 }
 
-export function RecipeGrid({ recipes }: { recipes: RecipeCardData[] }) {
+export function RecipeGrid({
+  recipes,
+  renderAction,
+}: {
+  recipes: RecipeCardData[];
+  renderAction?: (recipe: RecipeCardData) => ReactNode;
+}) {
   return (
     <div className={styles.recipeGrid}>
       {recipes.map((recipe) => (
-        <RecipeCard key={recipe.id} recipe={recipe} />
+        <RecipeCard
+          key={recipe.id}
+          recipe={recipe}
+          action={renderAction?.(recipe)}
+        />
       ))}
     </div>
   );

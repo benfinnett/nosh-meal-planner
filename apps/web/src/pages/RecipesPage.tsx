@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sheet";
 import styles from "./Recipes.module.css";
 import { IconBowlSpoon } from "@tabler/icons-react";
+import { AddToWeek } from "@/components/AddToWeek";
 
 const categories = ["dietary", "cuisine", "mealType", "tags"] as const;
 type Category = (typeof categories)[number];
@@ -210,6 +211,9 @@ export default function RecipesPage() {
 
   return (
     <section className={styles.page} aria-labelledby="recipes-title">
+      {params.get("picker") === "week" && (
+        <Link to="/plan">Back to meal plan</Link>
+      )}
       <div className={styles.heading}>
         <div>
           <h1 id="recipes-title">Recipes</h1>
@@ -321,7 +325,10 @@ export default function RecipesPage() {
           {recipes.data && (
             <>
               {cards.length ? (
-                <RecipeGrid recipes={cards} />
+                <RecipeGrid
+                  recipes={cards}
+                  renderAction={(recipe) => <AddToWeek recipeId={recipe.id} />}
+                />
               ) : (
                 <p>
                   No recipes match these filters. Try clearing a filter or

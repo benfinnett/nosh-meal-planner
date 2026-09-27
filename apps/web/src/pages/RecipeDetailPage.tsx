@@ -8,9 +8,20 @@ import { CuisineFlag } from "@/components/CuisineFlag";
 import { Button } from "@/components/ui/button";
 import styles from "./Recipes.module.css";
 import { IconArrowLeft } from "@tabler/icons-react";
+import { AddToWeek } from "@/components/AddToWeek";
 
-function RecipeContent({ recipe }: { recipe: RecipeDetail }) {
-  const [servings, setServings] = useState(String(recipe.serves));
+export function RecipeContent({
+  recipe,
+  initialServings,
+  captured = false,
+}: {
+  recipe: RecipeDetail;
+  initialServings?: number;
+  captured?: boolean;
+}) {
+  const [servings, setServings] = useState(
+    String(initialServings ?? recipe.serves),
+  );
   const household = useQuery({
     queryKey: ["household"],
     queryFn: fetchHousehold,
@@ -21,20 +32,21 @@ function RecipeContent({ recipe }: { recipe: RecipeDetail }) {
   const multiplier = valid ? amount / recipe.serves : 1;
   const number = new Intl.NumberFormat("en-GB", { maximumFractionDigits: 2 });
   useEffect(() => {
-    document.title = `${recipe.name} | Nosh`;
-  }, [recipe.name]);
+    if (!captured) document.title = `${recipe.name} | Nosh`;
+  }, [recipe.name, captured]);
 
   return (
     <>
       <div className={styles.heading}>
         <div>
           <h1>{recipe.name}</h1>
-          <p>
+          <p style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <CuisineFlag cuisine={recipe.cuisine} />
             {recipe.source === "user" ? "Custom recipe" : "Nosh recipe"} ·
             Original recipe serves {recipe.serves}
           </p>
         </div>
-        <CuisineFlag cuisine={recipe.cuisine} />
+        {!captured && <AddToWeek recipeId={recipe.id} showLabel />}
       </div>
       <dl className={styles.metadata}>
         <div>

@@ -5,7 +5,7 @@ import RecipesPage from "@/pages/RecipesPage";
 import RecipeDetailPage from "@/pages/RecipeDetailPage";
 import CreateRecipePage from "@/pages/CreateRecipePage";
 import { HouseholdProvider } from "@/HouseholdProvider";
-import PlaceholderPage from "@/pages/PlaceholderPage";
+import MealPlanPage from "@/pages/MealPlanPage";
 import { SnackbarProvider } from "@/components/Snackbar";
 import {
   NavLink,
@@ -40,8 +40,10 @@ export function App() {
         ? "Create recipe"
         : pathname.startsWith("/recipes/")
           ? "Recipe"
-          : (navigation.find((item) => item.path === pathname)?.label ??
-            "Home");
+          : pathname.startsWith("/plan")
+            ? "Meal plan"
+            : (navigation.find((item) => item.path === pathname)?.label ??
+              "Home");
     document.title = `${title} | Nosh`;
 
     if (previousPath.current !== pathname) {
@@ -87,15 +89,7 @@ export function App() {
         >
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route
-              path="/plan"
-              element={
-                <PlaceholderPage
-                  title="Meal plan"
-                  description="Building your weekly meal plan"
-                />
-              }
-            />
+            <Route path="/plan/*" element={<MealPlanPage />} />
             <Route path="/recipes" element={<RecipesPage />} />
             <Route path="/recipes/new" element={<CreateRecipePage />} />
             <Route path="/recipes/:id" element={<RecipeDetailPage />} />
