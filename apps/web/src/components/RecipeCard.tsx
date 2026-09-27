@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { IconChefHat, IconUser } from "@tabler/icons-react";
+import { IconUser } from "@tabler/icons-react";
 import type { RecipeCard as RecipeCardData } from "@nosh/contracts";
 import { CuisineFlag } from "./CuisineFlag";
 import {
@@ -30,7 +30,6 @@ export function RecipeCard({ recipe }: { recipe: RecipeCardData }) {
         </p>
         <span className={styles.recipeCuisineIcons}>
           <CuisineFlag cuisine={recipe.cuisine} />
-          <IconChefHat size={28} aria-hidden="true" />
         </span>
       </div>
       <h3>
