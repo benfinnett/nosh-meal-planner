@@ -8,6 +8,54 @@ import {
 } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
 
+export const householdSettings = sqliteTable(
+  "household_settings",
+  {
+    id: integer("id").primaryKey(),
+    householdSize: integer("household_size").notNull(),
+    location: text("location", {
+      enum: [
+        "england",
+        "wales",
+        "northern-ireland",
+        "scotland",
+        "outside-uk",
+        "unspecified",
+      ],
+    }).notNull(),
+  },
+  (table) => [
+    check("household_singleton", sql`${table.id} = 1`),
+    check(
+      "household_size_valid",
+      sql`${table.householdSize} > 0 AND ${table.householdSize} <= 50`,
+    ),
+    check(
+      "household_location_valid",
+      sql`${table.location} IN ('england', 'wales', 'northern-ireland', 'scotland', 'outside-uk', 'unspecified')`,
+    ),
+  ],
+);
+
+export const householdDietary = sqliteTable(
+  "household_dietary_preferences",
+  {
+    householdId: integer("household_id")
+      .notNull()
+      .references(() => householdSettings.id, { onDelete: "cascade" }),
+    preference: text("preference", {
+      enum: ["vegetarian", "vegan", "dairy-free", "gluten-free"],
+    }).notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.householdId, table.preference] }),
+    check(
+      "household_preference_valid",
+      sql`${table.preference} IN ('vegetarian', 'vegan', 'dairy-free', 'gluten-free')`,
+    ),
+  ],
+);
+
 export const recipes = sqliteTable(
   "recipes",
   {
