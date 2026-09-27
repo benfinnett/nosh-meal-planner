@@ -1,6 +1,5 @@
 .page {
-  max-width: 680px;
-  margin-inline: auto;
+  min-width: 0;
 }
 .page h1 {
   margin-bottom: 8px;

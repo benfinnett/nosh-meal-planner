@@ -37,7 +37,7 @@ function HomePage() {
   });
 
   return (
-    <>
+    <div className={styles.page}>
       <section aria-labelledby="inspiration-title">
         <div className={styles.sectionHeading}>
           <h1 id="inspiration-title">What’s on the menu?</h1>
@@ -68,6 +68,10 @@ function HomePage() {
         <div>
           <h1 id="coverage-title">This week, at a glance</h1>
           <h3>0 of 21 meal slots planned</h3>
+          <Button variant="text" render={<Link to="/plan" />}>
+            Create a meal plan
+            <IconArrowRight size={18} aria-hidden="true" />
+          </Button>
         </div>
         <div>
           <ul className={styles.dayBars} aria-label="Weekly meal-plan coverage">
@@ -93,7 +97,7 @@ function HomePage() {
           </p>
         </div>
       </section>
-    </>
+    </div>
   );
 }
 
