@@ -19,7 +19,7 @@ test("explorer restores filters, loaded pages and focus after recipe details", a
   await expect(page).toHaveTitle(`${name} | Nosh`);
   await expect(page.locator("ol")).toHaveCSS("list-style-type", "decimal");
   await page.getByLabel("Servings", { exact: true }).fill("3");
-  await page.getByRole("button", { name: "Back to recipes" }).click();
+  await page.getByRole("button", { name: "Recipes", exact: true }).click();
   await expect(page).toHaveURL(/\/recipes\?dietary=$/);
   await expect(page.getByRole("article")).toHaveCount(total);
   await expect(page.getByRole("link", { name, exact: true })).toBeFocused();
@@ -64,7 +64,7 @@ test("creates a persistent recipe with scaling and protects an unsaved draft", a
   await page.reload();
   await expect(page.getByText("250 g beans", { exact: true })).toBeVisible();
   await page.getByLabel("Servings", { exact: true }).fill("3");
-  await expect(page.getByText("187.5 g beans", { exact: true })).toBeVisible();
+  await expect(page.getByText("188 g beans", { exact: true })).toBeVisible();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,

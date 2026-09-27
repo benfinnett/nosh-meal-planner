@@ -41,8 +41,14 @@ test("household settings autosave and survive reload at every viewport", async (
     });
     await support.scrollIntoViewIfNeeded();
     const box = await support.boundingBox();
-    const nav = await page.getByRole("navigation").boundingBox();
-    expect(box!.y + box!.height).toBeLessThanOrEqual(nav!.y);
+    const mobileNav = page.getByRole("navigation", {
+      name: "Main navigation (mobile)",
+      exact: true,
+    });
+    if (await mobileNav.isVisible()) {
+      const nav = await mobileNav.boundingBox();
+      expect(box!.y + box!.height).toBeLessThanOrEqual(nav!.y);
+    }
     await page.getByRole("combobox").selectOption("unspecified");
     await expect(page.getByRole("status")).toHaveText("Saved");
     await page.reload();

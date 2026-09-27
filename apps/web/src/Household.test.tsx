@@ -18,6 +18,27 @@ const initial = {
   dietaryPreferences: [],
   location: "england",
 };
+
+function mockHouseholdApi(save: (options: RequestInit) => unknown) {
+  const fetch = vi.fn(async (url: string, options?: RequestInit) => {
+    if (url === "/api/household") {
+      if (options?.method === "PUT") return save(options);
+      return { ok: true, json: async () => initial };
+    }
+    if (url === "/api/planner") {
+      return {
+        ok: true,
+        json: async () => ({ current: null, suggestedWeekStart: "2026-09-28" }),
+      };
+    }
+    if (url === "/api/templates") {
+      return { ok: true, json: async () => ({ templates: [] }) };
+    }
+    throw new Error(`Unexpected request: ${url}`);
+  });
+  vi.stubGlobal("fetch", fetch);
+  return fetch;
+}
 function mount() {
   render(
     <QueryClientProvider
@@ -79,9 +100,8 @@ it("shows a skeleton without editable defaults, then recovers from a loading fai
 it("debounces edits, serializes saves, preserves newer drafts and retries failures across navigation", async () => {
   vi.useFakeTimers();
   let finish!: (value: unknown) => void;
-  const fetch = vi
+  const save = vi
     .fn()
-    .mockResolvedValueOnce({ ok: true, json: async () => initial })
     .mockImplementationOnce(
       () =>
         new Promise((resolve) => {
@@ -89,11 +109,11 @@ it("debounces edits, serializes saves, preserves newer drafts and retries failur
         }),
     )
     .mockRejectedValueOnce(new Error("offline"))
-    .mockImplementation(async (_url, options) => ({
+    .mockImplementation(async (options) => ({
       ok: true,
       json: async () => JSON.parse(options.body),
     }));
-  vi.stubGlobal("fetch", fetch);
+  const fetch = mockHouseholdApi(save);
   mount();
   await tick();
   await tick(1);
@@ -123,19 +143,19 @@ it("debounces edits, serializes saves, preserves newer drafts and retries failur
   fireEvent.click(screen.getByRole("button", { name: "Retry" }));
   await tick();
   expect(screen.getByRole("status")).toHaveTextContent("Saved");
-  expect(JSON.parse(fetch.mock.calls[3][1].body).householdSize).toBe(4);
+  const saves = fetch.mock.calls.filter(
+    ([url, options]) => url === "/api/household" && options?.method === "PUT",
+  );
+  expect(saves).toHaveLength(3);
+  expect(JSON.parse(saves.at(-1)![1]!.body as string).householdSize).toBe(4);
 });
 
 it("cancels invalid pending edits and keeps saving after navigating away", async () => {
   vi.useFakeTimers();
-  const fetch = vi
-    .fn()
-    .mockResolvedValueOnce({ ok: true, json: async () => initial })
-    .mockImplementation(async (_url, options) => ({
-      ok: true,
-      json: async () => JSON.parse(options.body),
-    }));
-  vi.stubGlobal("fetch", fetch);
+  const fetch = mockHouseholdApi(async (options) => ({
+    ok: true,
+    json: async () => JSON.parse(options.body as string),
+  }));
   mount();
   await tick();
   await tick(1);

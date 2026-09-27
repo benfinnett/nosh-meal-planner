@@ -8,7 +8,9 @@ test("plans a collection, shops, saves a template and reuses archived history", 
     data: { householdSize: 2, dietaryPreferences: [], location: "england" },
   });
   await page.goto("/plan");
-  await page.getByRole("button", { name: /Start (a|another) week/ }).click();
+  await page
+    .getByRole("button", { name: /^Start (a|a new|another) week$/ })
+    .click();
   await page
     .getByRole("button", { name: "Start this week", exact: true })
     .click();

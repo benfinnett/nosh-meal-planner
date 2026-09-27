@@ -2,7 +2,8 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: false,
-  use: { baseURL: "http://127.0.0.1:5173", trace: "retain-on-failure" },
+  workers: 1,
+  use: { baseURL: "http://127.0.0.1:5184", trace: "retain-on-failure" },
   projects: [
     {
       name: "laptop",
@@ -26,10 +27,20 @@ export default defineConfig({
       },
     },
   ],
-  webServer: {
-    command: "pnpm dev",
-    url: "http://127.0.0.1:5173",
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-  },
+  webServer: [
+    {
+      command:
+        "node --conditions=development --import ./apps/api/node_modules/tsx/dist/loader.mjs apps/api/src/server.ts",
+      url: "http://127.0.0.1:3004/api/health/ready",
+      env: { PORT: "3004", DATABASE_PATH: ":memory:", NODE_ENV: "test" },
+      reuseExistingServer: false,
+    },
+    {
+      command:
+        "node apps/web/node_modules/vite/bin/vite.js --config apps/web/vite.config.ts apps/web --port 5184 --host 127.0.0.1",
+      url: "http://127.0.0.1:5184",
+      env: { API_PROXY_TARGET: "http://127.0.0.1:3004" },
+      reuseExistingServer: false,
+    },
+  ],
 });
