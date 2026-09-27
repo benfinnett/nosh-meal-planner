@@ -3,9 +3,7 @@ import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 
-// Design system button variants: Primary (main call to action), Secondary
-// (lower-emphasis actions with a visible outline) and Text (link-like, no
-// background or border, for inline or navigational actions).
+// Design system button variants cover primary, secondary, text, and error actions.
 const buttonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 rounded-md font-sans text-sm font-semibold whitespace-nowrap transition-colors hover:cursor-pointer disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
@@ -13,9 +11,13 @@ const buttonVariants = cva(
       variant: {
         primary:
           "border border-transparent bg-primary text-primary-foreground hover:bg-[var(--color-nosh-teal)] hover:text-white",
+        error:
+          "border border-transparent bg-destructive text-white hover:bg-destructive/90",
         secondary:
           "border border-[var(--control-border)] bg-transparent text-foreground hover:bg-[var(--color-nosh-green)]/10",
         text: "border-none bg-transparent px-1 text-foreground underline-offset-4 hover:bg-[var(--color-nosh-green)]/10",
+        "text-error":
+          "border-none bg-transparent px-1 text-destructive underline-offset-4 hover:bg-destructive/10",
       },
       size: {
         default: "h-11 px-4 has-[>svg]:px-3",
