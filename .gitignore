@@ -1,6 +1,4 @@
 Project Information.pptx
-*.md
-!README.md
 node_modules/
 dist/
 .env
@@ -11,3 +9,4 @@ test-results/
 playwright-report/
 coverage/
 .pnpm-store/
+AGENTS.md
