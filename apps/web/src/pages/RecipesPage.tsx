@@ -49,7 +49,18 @@ export default function RecipesPage() {
     queryKey: ["recipe-filter-options"],
     queryFn: fetchRecipeOptions,
   });
-  const explicitDietary = params.has("dietary");
+  // Dietary is "ready" once resolved from the URL or the household default, and
+  // stays that way even after the filter is cleared, so it never needs an
+  // empty ?dietary= marker in the URL just to remember it was already resolved.
+  const [dietaryReady, setDietaryReady] = useState(() => params.has("dietary"));
+  if (!dietaryReady && household.data) {
+    const next = new URLSearchParams(params);
+    household.data.dietaryPreferences.forEach((value) =>
+      next.append("dietary", value),
+    );
+    setDietaryReady(true);
+    setParams(next, { replace: true });
+  }
   const urlSearch = params.get("q") ?? "";
   const [search, setSearch] = useState(urlSearch);
   const [previousSearch, setPreviousSearch] = useState(urlSearch);
@@ -57,19 +68,6 @@ export default function RecipesPage() {
     setPreviousSearch(urlSearch);
     setSearch(urlSearch);
   }
-
-  useEffect(() => {
-    if (!explicitDietary && household.data) {
-      const next = new URLSearchParams(params);
-      next.delete("dietary");
-      if (household.data.dietaryPreferences.length)
-        household.data.dietaryPreferences.forEach((value) =>
-          next.append("dietary", value),
-        );
-      else next.set("dietary", "");
-      setParams(next, { replace: true });
-    }
-  }, [explicitDietary, household.data, params, setParams]);
 
   useEffect(() => {
     if (search === urlSearch) return;
@@ -101,7 +99,7 @@ export default function RecipesPage() {
       return fetchCatalogue(query, signal);
     },
     getNextPageParam: (page) => page.nextCursor ?? undefined,
-    enabled: explicitDietary,
+    enabled: dietaryReady,
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
   });
@@ -145,7 +143,7 @@ export default function RecipesPage() {
     const next = new URLSearchParams(params);
     next.delete(category);
     selected.forEach((value) => next.append(category, value));
-    if (category === "dietary" && !selected.length) next.set("dietary", "");
+    if (category === "dietary") setDietaryReady(true);
     setControlParams(next);
     setParams(next);
   }
@@ -208,7 +206,7 @@ export default function RecipesPage() {
     );
   }
   const cards = recipes.data?.pages.flatMap((page) => page.recipes) ?? [];
-  const waitingForHousehold = !explicitDietary;
+  const waitingForHousehold = !dietaryReady;
 
   return (
     <section className={styles.page} aria-labelledby="recipes-title">
@@ -290,7 +288,7 @@ export default function RecipesPage() {
           variant="text"
           onClick={() => {
             setSearch("");
-            setParams({ dietary: "" });
+            setParams({});
           }}
         >
           Clear filters
