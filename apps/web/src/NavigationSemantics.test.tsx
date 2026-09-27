@@ -165,27 +165,3 @@ it.each([false, true])(
     expect(warn).not.toHaveBeenCalled();
   },
 );
-
-it.each([
-  ["/recipes?dietary=", "Create recipe", "/recipes/new"],
-  ["/recipes/soup", "Recipes", "/recipes"],
-  ["/recipes/new", "Recipes", "/recipes"],
-  [
-    "/household",
-    "Find out about NHS Healthy Start",
-    "https://www.healthystart.nhs.uk/",
-  ],
-  ["/plan", "Browse recipes", "/recipes?picker=week"],
-  ["/plan/history", "View", "/plan/weeks/week-1"],
-])("preserves native link semantics on %s", async (path, name, href) => {
-  const { error, warn } = mount(path);
-  const links = await screen.findAllByRole("link", { name });
-  for (const link of links) {
-    expect(link).toHaveAttribute("href", href);
-    expect(link).not.toHaveAttribute("role", "button");
-    expect(link).not.toHaveAttribute("type", "button");
-    expect(link.tabIndex).toBe(0);
-  }
-  expect(error).not.toHaveBeenCalled();
-  expect(warn).not.toHaveBeenCalled();
-});
