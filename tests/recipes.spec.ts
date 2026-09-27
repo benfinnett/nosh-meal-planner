@@ -17,6 +17,7 @@ test("explorer restores filters, loaded pages and focus after recipe details", a
   await card.click();
   await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
   await expect(page).toHaveTitle(`${name} | Nosh`);
+  await expect(page.locator("ol")).toHaveCSS("list-style-type", "decimal");
   await page.getByLabel("Servings", { exact: true }).fill("3");
   await page.getByRole("button", { name: "Back to recipes" }).click();
   await expect(page).toHaveURL(/\/recipes\?dietary=$/);

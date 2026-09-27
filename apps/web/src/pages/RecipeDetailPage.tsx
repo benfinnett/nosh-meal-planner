@@ -120,7 +120,9 @@ function RecipeContent({ recipe }: { recipe: RecipeDetail }) {
           </ul>
         </section>
         <section aria-labelledby="method-title">
-          <h2 id="method-title">Method</h2>
+          <h2 id="method-title" style={{ marginBottom: 16 }}>
+            Method
+          </h2>
           <ol className={styles.method}>
             {recipe.method.map((instruction, index) => (
               <li key={index}>{instruction}</li>

@@ -158,6 +158,7 @@
   overflow-wrap: anywhere;
 }
 .method {
+  list-style-type: decimal;
   padding-left: 28px;
 }
 .method li {
