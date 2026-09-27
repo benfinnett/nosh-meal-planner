@@ -72,6 +72,7 @@ export default function HouseholdPage() {
               </p>
               <Button
                 variant="text"
+                nativeButton={false}
                 render={
                   <Link
                     to="https://www.mygov.scot/best-start-grant-best-start-foods"
@@ -101,6 +102,7 @@ export default function HouseholdPage() {
                 </p>
                 <Button
                   variant="text"
+                  nativeButton={false}
                   render={
                     <Link
                       to="https://www.healthystart.nhs.uk/"

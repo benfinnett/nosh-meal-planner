@@ -502,6 +502,7 @@ export default function MealPlanPage() {
                 </div>
                 <Button
                   variant="text"
+                  nativeButton={false}
                   render={<Link to={`/plan/weeks/${w.id}`} />}
                 >
                   View
@@ -641,7 +642,10 @@ export default function MealPlanPage() {
                     )}
                   {editable && (
                     <div className={styles.toolbar}>
-                      <Button render={<Link to="/recipes?picker=week" />}>
+                      <Button
+                        nativeButton={false}
+                        render={<Link to="/recipes?picker=week" />}
+                      >
                         <IconSearch aria-hidden="true" />
                         Browse recipes
                       </Button>

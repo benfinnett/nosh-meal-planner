@@ -52,11 +52,12 @@ export function AddToWeek({
     <div>
       <Button
         variant="secondary"
+        aria-label="Add to week"
         disabled={write.pending}
         onClick={() => void add()}
       >
         <IconPlus aria-hidden="true" />
-        {showLabel && "Add to Week"}
+        {showLabel && "Add to week"}
       </Button>
       {write.error && <p role="alert">{write.error}</p>}
     </div>

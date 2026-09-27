@@ -14,7 +14,12 @@ function PlaceholderPage({
     <section className={styles.page}>
       <h1>{title}</h1>
       <p>{description} is still cooking in the kitchen.</p>
-      <Button variant="text" className="mt-6" render={<Link to="/" />}>
+      <Button
+        variant="text"
+        className="mt-6"
+        nativeButton={false}
+        render={<Link to="/" />}
+      >
         <IconArrowLeft size={18} aria-hidden="true" />
         Back to home
       </Button>

@@ -152,7 +152,11 @@ export default function CreateRecipePage() {
   return (
     <section className={styles.page}>
       <UnsavedRecipeGuard dirty={dirty && !mutation.isSuccess} />
-      <Button variant="text" render={<Link to="/recipes" />}>
+      <Button
+        variant="text"
+        nativeButton={false}
+        render={<Link to="/recipes" />}
+      >
         <IconArrowLeft size={18} aria-hidden="true" />
         Recipes
       </Button>

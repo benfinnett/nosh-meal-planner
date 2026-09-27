@@ -168,7 +168,11 @@ export default function RecipeDetailPage() {
           Recipes
         </Button>
       ) : (
-        <Button variant="text" render={<Link to="/recipes" />}>
+        <Button
+          variant="text"
+          nativeButton={false}
+          render={<Link to="/recipes" />}
+        >
           <IconArrowLeft size={18} aria-hidden="true" />
           Recipes
         </Button>
