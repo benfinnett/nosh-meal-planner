@@ -110,7 +110,11 @@ function RecipeContent({ recipe }: { recipe: RecipeDetail }) {
                 <span>
                   {ingredient.quantity === null
                     ? ""
-                    : `${number.format(ingredient.quantity * multiplier)} `}
+                    : `${number.format(
+                        ingredient.quantity * multiplier > 10
+                          ? Math.round(ingredient.quantity * multiplier)
+                          : ingredient.quantity * multiplier,
+                      )} `}
                   {ingredient.unit ? `${ingredient.unit} ` : ""}
                   {ingredient.item}
                   {ingredient.prep ? `, ${ingredient.prep}` : ""}
