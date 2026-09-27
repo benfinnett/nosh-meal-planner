@@ -48,16 +48,14 @@ it("shows loading and a truthful seven-day empty chart", () => {
 it("shows real summaries and navigates to each explicit placeholder", async () => {
   vi.stubGlobal(
     "fetch",
-    vi
-      .fn()
-      .mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          recipes: [
-            { id: "r1", name: "Lentil soup", cuisine: "British", serves: 4 },
-          ],
-        }),
+    vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        recipes: [
+          { id: "r1", name: "Lentil soup", cuisine: "British", serves: 4 },
+        ],
       }),
+    }),
   );
   mount();
   expect(await screen.findByText("Lentil soup")).toBeInTheDocument();
@@ -93,12 +91,10 @@ it("explains an empty recipe response", async () => {
 it("shows a recoverable error for an invalid API response", async () => {
   vi.stubGlobal(
     "fetch",
-    vi
-      .fn()
-      .mockResolvedValue({
-        ok: true,
-        json: async () => ({ recipes: [{ name: "Invalid" }] }),
-      }),
+    vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ recipes: [{ name: "Invalid" }] }),
+    }),
   );
   mount();
   expect(await screen.findByRole("alert")).toHaveTextContent(
