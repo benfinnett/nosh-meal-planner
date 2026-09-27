@@ -49,7 +49,7 @@ test("creates a persistent recipe with scaling and protects an unsaved draft", a
   await expect(page.getByLabel("Recipe name", { exact: true })).toHaveValue(
     name,
   );
-  await page.getByLabel("Base servings", { exact: true }).fill("4");
+  await page.getByLabel("Servings", { exact: true }).fill("4");
   await page.getByLabel("Dinner", { exact: true }).check();
   await page.getByLabel("Ingredient 1", { exact: true }).fill("beans");
   await page.getByLabel("Quantity 1", { exact: true }).fill("250");

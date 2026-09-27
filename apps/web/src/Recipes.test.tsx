@@ -221,7 +221,7 @@ it("validates creation, preserves input on failure, and saves ordered rows", asy
   });
   mount("/recipes/new");
   await waitFor(() =>
-    expect(screen.getByLabelText("Base servings")).toHaveValue(3),
+    expect(screen.getByLabelText("Servings")).toHaveValue(3),
   );
   fireEvent.click(screen.getByRole("button", { name: "Save recipe" }));
   expect(await screen.findByText("Enter a recipe name.")).toBeInTheDocument();

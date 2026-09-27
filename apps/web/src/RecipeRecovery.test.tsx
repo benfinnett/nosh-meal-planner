@@ -100,14 +100,14 @@ it("keeps loaded cards when another page fails and retries that page", async () 
   expect(await screen.findByRole("link", { name: "Stew" })).toBeInTheDocument();
 });
 
-it("sets the recipe title when opening cached details and rejects invalid serving counts", async () => {
+it("renders cached details with the recipe route title and rejects invalid serving counts", async () => {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false, staleTime: Infinity } },
   });
   client.setQueryData(["recipe-detail", "soup"], detail);
   client.setQueryData(["household"], household);
   mount("/recipes/soup", client);
-  await waitFor(() => expect(document.title).toBe("Soup | Nosh"));
+  await waitFor(() => expect(document.title).toBe("Recipe | Nosh"));
   fireEvent.change(screen.getByLabelText("Servings"), {
     target: { value: "0" },
   });
