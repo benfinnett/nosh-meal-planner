@@ -1,4 +1,5 @@
 import Database from "better-sqlite3";
+import { plannerStore } from "./planner-store.js";
 import { recipeStore } from "./recipe-store.js";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
@@ -63,7 +64,7 @@ export function openStore(path: string) {
     throw error;
   }
 
-  return {
+  const store = {
     ...recipeStore(sqlite),
     household(): Household {
       const row = db
@@ -255,6 +256,7 @@ export function openStore(path: string) {
         .all();
     },
   };
+  return { ...store, planner: plannerStore(sqlite, store) };
 }
 
 export type Store = ReturnType<typeof openStore>;

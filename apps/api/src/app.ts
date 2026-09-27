@@ -1,4 +1,6 @@
 import Fastify from "fastify";
+import { plannerRoutes } from "./planner-routes.js";
+import { PlannerError } from "./db/planner-store.js";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 import {
@@ -30,6 +32,10 @@ export async function createApp(store: Store, development = false) {
   app.setSerializerCompiler(serializerCompiler);
 
   app.setErrorHandler((error, request, reply) => {
+    if (error instanceof PlannerError)
+      return reply
+        .status(error.statusCode)
+        .send({ code: error.code, message: error.message });
     request.log.error(error);
     const invalid =
       typeof error === "object" && error !== null && "validation" in error;
@@ -81,6 +87,7 @@ export async function createApp(store: Store, development = false) {
     );
 
   app.addHook("onClose", async () => store.close());
+  plannerRoutes(app, store);
   app.get(
     "/api/household",
     { schema: { response: { 200: householdSchema, 500: errorSchema } } },
