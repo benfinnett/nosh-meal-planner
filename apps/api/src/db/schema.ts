@@ -1,6 +1,8 @@
 import {
   check,
   integer,
+  index,
+  uniqueIndex,
   primaryKey,
   real,
   sqliteTable,
@@ -28,7 +30,7 @@ export const householdSettings = sqliteTable(
     check("household_singleton", sql`${table.id} = 1`),
     check(
       "household_size_valid",
-      sql`${table.householdSize} > 0 AND ${table.householdSize} <= 50`,
+      sql`${table.householdSize} > 0 AND ${table.householdSize} <= 9007199254740991`,
     ),
     check(
       "household_location_valid",
@@ -36,6 +38,72 @@ export const householdSettings = sqliteTable(
     ),
   ],
 );
+
+export const plannerCollections = sqliteTable(
+  "planner_collections",
+  {
+    id: text("id").primaryKey(),
+    kind: text("kind", { enum: ["week", "template"] }).notNull(),
+    status: text("status", { enum: ["active", "archived"] }),
+    weekStart: text("week_start"),
+    name: text("name"),
+    revision: integer("revision").notNull().default(0),
+    createdAt: text("created_at").notNull(),
+    updatedAt: text("updated_at").notNull(),
+    shopping: text("shopping").notNull().default("[]"),
+  },
+  (t) => [
+    uniqueIndex("planner_one_active")
+      .on(t.status)
+      .where(sql`${t.status} = 'active'`),
+    uniqueIndex("planner_week_date").on(t.weekStart),
+    uniqueIndex("planner_template_name")
+      .on(sql`lower(${t.name})`)
+      .where(sql`${t.kind} = 'template'`),
+    check(
+      "planner_kind_valid",
+      sql`(${t.kind} = 'week' AND ${t.status} IN ('active','archived') AND ${t.weekStart} IS NOT NULL AND ${t.name} IS NULL) OR (${t.kind} = 'template' AND ${t.status} IS NULL AND ${t.weekStart} IS NULL AND ${t.name} IS NOT NULL)`,
+    ),
+  ],
+);
+
+export const plannerMeals = sqliteTable(
+  "planner_meals",
+  {
+    id: text("id").primaryKey(),
+    collectionId: text("collection_id")
+      .notNull()
+      .references(() => plannerCollections.id, { onDelete: "cascade" }),
+    sourceRecipeId: text("source_recipe_id").notNull(),
+    snapshot: text("snapshot").notNull(),
+    servings: integer("servings").notNull(),
+    position: integer("position").notNull(),
+  },
+  (t) => [
+    index("planner_meals_owner").on(t.collectionId),
+    check(
+      "planner_servings_valid",
+      sql`${t.servings} > 0 AND ${t.servings} <= 9007199254740991`,
+    ),
+  ],
+);
+
+export const plannerOperations = sqliteTable("planner_operations", {
+  id: text("id").primaryKey(),
+  request: text("request").notNull(),
+  response: text("response").notNull(),
+});
+
+export const plannerPreviews = sqliteTable("planner_previews", {
+  token: text("token").primaryKey(),
+  collectionId: text("collection_id")
+    .notNull()
+    .references(() => plannerCollections.id, { onDelete: "cascade" }),
+  revision: integer("revision").notNull(),
+  inputs: text("inputs").notNull(),
+  expiresAt: text("expires_at").notNull(),
+  result: text("result").notNull(),
+});
 
 export const householdDietary = sqliteTable(
   "household_dietary_preferences",
