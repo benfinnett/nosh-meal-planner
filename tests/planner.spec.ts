@@ -32,7 +32,7 @@ test("plans a collection, shops, saves a template and reuses archived history", 
     page.getByText("2 meals selected", { exact: true }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "Autofill remaining meals", exact: true })
+    .getByRole("button", { name: "Smart-Fill Remaining Meals", exact: true })
     .click();
   await expect(
     page.getByRole("dialog", { name: "A mix for your week" }),
@@ -42,7 +42,7 @@ test("plans a collection, shops, saves a template and reuses archived history", 
     page.getByText("2 meals selected", { exact: true }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "Autofill remaining meals", exact: true })
+    .getByRole("button", { name: "Smart-Fill Remaining Meals", exact: true })
     .click();
   await page
     .getByRole("button", { name: "Add these meals", exact: true })
@@ -51,9 +51,12 @@ test("plans a collection, shops, saves a template and reuses archived history", 
     page.getByText("21 meals selected", { exact: true }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Shopping", exact: true }).click();
-  const first = page.getByRole("checkbox").first();
-  const checkName = await first.getAttribute("aria-label");
-  await first.check();
+  const unchecked = page
+    .locator('input[type="checkbox"]:not(:checked)')
+    .first();
+  const checkName = await unchecked.getAttribute("aria-label");
+  const first = page.getByRole("checkbox", { name: checkName!, exact: true });
+  await first.click();
   await page.reload();
   await page.getByRole("button", { name: "Shopping", exact: true }).click();
   await expect(
@@ -78,10 +81,7 @@ test("plans a collection, shops, saves a template and reuses archived history", 
     page.getByText("21 meals selected", { exact: true }),
   ).toBeVisible();
   await page.getByRole("link", { name: "History", exact: true }).click();
-  await page
-    .getByRole("link", { name: /View week/ })
-    .first()
-    .click();
+  await page.getByRole("link", { name: "View", exact: true }).first().click();
   await expect(
     page.getByText("Archived · Read-only", { exact: true }),
   ).toBeVisible();
