@@ -44,7 +44,7 @@ it("shows loading and a truthful seven-day empty chart", () => {
     expect(day).toHaveAccessibleName(/0 of 3 meals planned/);
 });
 
-it("shows real summaries and navigates to placeholders and household settings", async () => {
+it("shows real summaries and navigates to the explorer and household settings", async () => {
   vi.stubGlobal(
     "fetch",
     vi.fn().mockImplementation(async (url) => ({
@@ -52,16 +52,21 @@ it("shows real summaries and navigates to placeholders and household settings", 
       json: async () =>
         url === "/api/household"
           ? { householdSize: 1, dietaryPreferences: [], location: "england" }
-          : {
-              recipes: [
-                {
-                  id: "r1",
-                  name: "Lentil soup",
-                  cuisine: "British",
-                  serves: 4,
-                },
-              ],
-            },
+          : url === "/api/recipes/filter-options"
+            ? { cuisines: ["british"], mealTypes: ["dinner"], tags: [] }
+            : {
+                total: 1,
+                nextCursor: null,
+                recipes: [
+                  {
+                    id: "r1",
+                    name: "Lentil soup",
+                    cuisine: "British",
+                    serves: 4,
+                    tags: [],
+                  },
+                ],
+              },
     })),
   );
   mount();
@@ -76,10 +81,14 @@ it("shows real summaries and navigates to placeholders and household settings", 
     expect(screen.getByRole("heading", { level: 1, name })).toBeInTheDocument();
     if (name === "Household") {
       expect(await screen.findByRole("spinbutton")).toHaveValue(1);
-    } else {
+    } else if (name === "Meal plan") {
       expect(
         screen.getByText(/is still cooking in the kitchen/),
       ).toBeInTheDocument();
+    } else {
+      expect(
+        screen.getByRole("link", { name: "Create recipe" }),
+      ).toHaveAttribute("href", "/recipes/new");
     }
     expect(within(nav).getByRole("link", { name })).toHaveAttribute(
       "aria-current",
@@ -91,9 +100,10 @@ it("shows real summaries and navigates to placeholders and household settings", 
 it("explains an empty recipe response", async () => {
   vi.stubGlobal(
     "fetch",
-    vi
-      .fn()
-      .mockResolvedValue({ ok: true, json: async () => ({ recipes: [] }) }),
+    vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ recipes: [], total: 0, nextCursor: null }),
+    }),
   );
   mount();
   expect(
