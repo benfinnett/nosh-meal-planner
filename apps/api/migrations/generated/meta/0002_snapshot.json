@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "85587cd8-88cf-4739-a235-a2dbf3e15ee3",
-  "prevId": "8c60fbc7-611e-4d2e-9d9e-f4c908dfc2ff",
+  "id": "bf3658a7-7dc3-4df7-a900-44a1b3112b3c",
+  "prevId": "85587cd8-88cf-4739-a235-a2dbf3e15ee3",
   "tables": {
     "household_dietary_preferences": {
       "name": "household_dietary_preferences",
@@ -91,6 +91,270 @@
           "value": "\"household_settings\".\"location\" IN ('england', 'wales', 'northern-ireland', 'scotland', 'outside-uk', 'unspecified')"
         }
       }
+    },
+    "planner_collections": {
+      "name": "planner_collections",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "week_start": {
+          "name": "week_start",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "revision": {
+          "name": "revision",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "shopping": {
+          "name": "shopping",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        }
+      },
+      "indexes": {
+        "planner_one_active": {
+          "name": "planner_one_active",
+          "columns": ["status"],
+          "isUnique": true,
+          "where": "\"planner_collections\".\"status\" = 'active'"
+        },
+        "planner_week_date": {
+          "name": "planner_week_date",
+          "columns": ["week_start"],
+          "isUnique": true
+        },
+        "planner_template_name": {
+          "name": "planner_template_name",
+          "columns": ["lower(\"name\")"],
+          "isUnique": true,
+          "where": "\"planner_collections\".\"kind\" = 'template'"
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "planner_kind_valid": {
+          "name": "planner_kind_valid",
+          "value": "(\"planner_collections\".\"kind\" = 'week' AND \"planner_collections\".\"status\" IN ('active','archived') AND \"planner_collections\".\"week_start\" IS NOT NULL AND \"planner_collections\".\"name\" IS NULL) OR (\"planner_collections\".\"kind\" = 'template' AND \"planner_collections\".\"status\" IS NULL AND \"planner_collections\".\"week_start\" IS NULL AND \"planner_collections\".\"name\" IS NOT NULL)"
+        }
+      }
+    },
+    "planner_meals": {
+      "name": "planner_meals",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "collection_id": {
+          "name": "collection_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source_recipe_id": {
+          "name": "source_recipe_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "snapshot": {
+          "name": "snapshot",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "servings": {
+          "name": "servings",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "planner_meals_owner": {
+          "name": "planner_meals_owner",
+          "columns": ["collection_id"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "planner_meals_collection_id_planner_collections_id_fk": {
+          "name": "planner_meals_collection_id_planner_collections_id_fk",
+          "tableFrom": "planner_meals",
+          "tableTo": "planner_collections",
+          "columnsFrom": ["collection_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "planner_servings_valid": {
+          "name": "planner_servings_valid",
+          "value": "\"planner_meals\".\"servings\" > 0 AND \"planner_meals\".\"servings\" <= 9007199254740991"
+        }
+      }
+    },
+    "planner_operations": {
+      "name": "planner_operations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "request": {
+          "name": "request",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "response": {
+          "name": "response",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "planner_previews": {
+      "name": "planner_previews",
+      "columns": {
+        "token": {
+          "name": "token",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "collection_id": {
+          "name": "collection_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "revision": {
+          "name": "revision",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "inputs": {
+          "name": "inputs",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "result": {
+          "name": "result",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "planner_previews_collection_id_planner_collections_id_fk": {
+          "name": "planner_previews_collection_id_planner_collections_id_fk",
+          "tableFrom": "planner_previews",
+          "tableTo": "planner_collections",
+          "columnsFrom": ["collection_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
     "recipe_dietary": {
       "name": "recipe_dietary",
@@ -416,6 +680,14 @@
     "columns": {}
   },
   "internal": {
-    "indexes": {}
+    "indexes": {
+      "planner_template_name": {
+        "columns": {
+          "lower(\"name\")": {
+            "isExpression": true
+          }
+        }
+      }
+    }
   }
 }
