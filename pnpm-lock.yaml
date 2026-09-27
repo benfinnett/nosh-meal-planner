@@ -71,6 +71,9 @@ importers:
       '@nosh/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@nosh/meal-planning':
+        specifier: workspace:*
+        version: link:../../packages/meal-planning
       better-sqlite3:
         specifier: 12.11.1
         version: 12.11.1
@@ -187,6 +190,8 @@ importers:
       zod:
         specifier: 4.6.5
         version: 4.6.5
+
+  packages/meal-planning: {}
 
 packages:
 

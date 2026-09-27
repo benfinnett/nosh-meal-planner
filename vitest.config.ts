@@ -17,6 +17,14 @@ export default defineConfig({
       {
         extends: true,
         test: {
+          name: "domain",
+          include: ["packages/meal-planning/src/**/*.test.ts"],
+          environment: "node",
+        },
+      },
+      {
+        extends: true,
+        test: {
           name: "api",
           include: ["apps/api/src/**/*.test.ts"],
           environment: "node",
