@@ -2,16 +2,14 @@ import { Link, useLocation } from "react-router-dom";
 import { IconChefHat, IconUser } from "@tabler/icons-react";
 import type { RecipeCard as RecipeCardData } from "@nosh/contracts";
 import { CuisineFlag } from "./CuisineFlag";
-import { explorerPositions, label } from "@/lib/recipe-navigation";
+import {
+  dietaryShortLabel,
+  explorerPositions,
+  label,
+} from "@/lib/recipe-navigation";
 import styles from "./RecipeCard.module.css";
 
-export function RecipeCard({
-  recipe,
-  index,
-}: {
-  recipe: RecipeCardData;
-  index: number;
-}) {
+export function RecipeCard({ recipe }: { recipe: RecipeCardData }) {
   const location = useLocation();
   return (
     <article className={styles.recipeCard}>
@@ -56,13 +54,21 @@ export function RecipeCard({
           {recipe.name}
         </Link>
       </h3>
-      {!!recipe.tags.length && (
-        <ul className={styles.tags} aria-label="Recipe tags">
+      {!!(recipe.dietary.length || recipe.tags.length) && (
+        <ul
+          className={styles.tags}
+          aria-label="Dietary requirements and recipe tags"
+        >
+          {recipe.dietary.map((requirement) => (
+            <li className={styles.dietaryTag} key={`dietary-${requirement}`}>
+              {dietaryShortLabel(requirement)}
+            </li>
+          ))}
           {[...recipe.tags]
             .sort()
             .slice(0, 3)
             .map((tag) => (
-              <li key={tag}>{label(tag)}</li>
+              <li key={`tag-${tag}`}>{label(tag)}</li>
             ))}
         </ul>
       )}
@@ -73,8 +79,8 @@ export function RecipeCard({
 export function RecipeGrid({ recipes }: { recipes: RecipeCardData[] }) {
   return (
     <div className={styles.recipeGrid}>
-      {recipes.map((recipe, index) => (
-        <RecipeCard key={recipe.id} recipe={recipe} index={index} />
+      {recipes.map((recipe) => (
+        <RecipeCard key={recipe.id} recipe={recipe} />
       ))}
     </div>
   );

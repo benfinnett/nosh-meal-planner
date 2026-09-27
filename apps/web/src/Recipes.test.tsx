@@ -17,13 +17,14 @@ const card = {
   name: "Bean soup",
   cuisine: "british",
   serves: 4,
+  dietary: ["vegan", "vegetarian", "gluten-free", "dairy-free"],
   tags: ["batch-cook", "freezer-friendly", "kid-friendly", "quick"],
 };
 const detail = {
   ...card,
   source: "system",
   mealType: ["dinner"],
-  dietary: ["vegetarian"],
+  dietary: ["vegan", "vegetarian", "gluten-free", "dairy-free"],
   ingredients: [
     { item: "beans", quantity: 250, unit: "g", prep: "drained" },
     { item: "salt", quantity: null, unit: null, prep: null },
@@ -101,7 +102,7 @@ function mockApi(
   return fetch;
 }
 
-it("initialises household filters, preserves explicit clearing, and shows only three card tags", async () => {
+it("initialises household filters, preserves explicit clearing, and shows dietary chips before three card tags", async () => {
   const fetch = mockApi();
   mount("/recipes");
   expect(
@@ -111,8 +112,20 @@ it("initialises household filters, preserves explicit clearing, and shows only t
     "dietary=vegetarian",
   );
   const article = screen.getByRole("article");
+  const chips = within(article).getByRole("list", {
+    name: "Dietary requirements and recipe tags",
+  });
+  expect(within(chips).getByText("Ve")).toBeInTheDocument();
+  expect(within(chips).getByText("V")).toBeInTheDocument();
+  expect(within(chips).getByText("GF")).toBeInTheDocument();
+  expect(within(chips).getByText("DF")).toBeInTheDocument();
+  expect(within(chips).queryByText("Vegan")).not.toBeInTheDocument();
+  expect(chips.textContent?.indexOf("Ve")).toBeLessThan(
+    chips.textContent?.indexOf("Batch cook") ?? -1,
+  );
   expect(within(article).getByText("Batch cook")).toBeInTheDocument();
   expect(within(article).queryByText("Quick")).not.toBeInTheDocument();
+  expect(screen.getByLabelText("Vegan (Ve)")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Clear filters" }));
   await waitFor(() =>
     expect(screen.getByTestId("location")).toHaveTextContent("dietary="),
@@ -175,6 +188,11 @@ it("scales to household and arbitrary servings, preserves null quantities, and r
   const fetch = mockApi();
   mount("/recipes/soup");
   await screen.findByRole("heading", { name: "Bean soup" });
+  expect(
+    screen.getByText(
+      "Vegan (Ve), Vegetarian (V), Gluten-Free (GF), Dairy-Free (DF)",
+    ),
+  ).toBeInTheDocument();
   expect(screen.getByText(/250 g/)).toBeInTheDocument();
   fireEvent.click(
     await screen.findByRole("button", { name: "Use household size" }),

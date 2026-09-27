@@ -20,6 +20,7 @@ const card = {
   name: "Soup",
   serves: 4,
   cuisine: "british",
+  dietary: [],
   tags: [],
 };
 const detail = {

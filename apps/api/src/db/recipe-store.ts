@@ -102,7 +102,10 @@ export function recipeStore(sqlite: Database.Database) {
         .prepare(
           `SELECT r.id, r.name, r.cuisine, r.serves, lower(r.name) AS sortName FROM recipes r WHERE ${predicates.join(" AND ")} ORDER BY lower(r.name), r.id LIMIT ?`,
         )
-        .all(...params, query.limit + 1) as (Omit<RecipeCard, "tags"> & {
+        .all(...params, query.limit + 1) as (Omit<
+        RecipeCard,
+        "dietary" | "tags"
+      > & {
         sortName: string;
       })[];
       const page = rows.slice(0, query.limit);
@@ -113,6 +116,7 @@ export function recipeStore(sqlite: Database.Database) {
           name: row.name,
           cuisine: row.cuisine,
           serves: row.serves,
+          dietary: values("recipe_dietary", "dietary", row.id),
           tags: values("recipe_tags", "tag", row.id),
         })),
         total,

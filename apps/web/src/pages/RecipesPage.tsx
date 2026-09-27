@@ -3,7 +3,11 @@ import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { dietaryPreferences } from "@nosh/contracts";
 import { fetchCatalogue, fetchHousehold, fetchRecipeOptions } from "@/lib/api";
-import { explorerPositions, label } from "@/lib/recipe-navigation";
+import {
+  dietaryDisplayLabel,
+  explorerPositions,
+  label,
+} from "@/lib/recipe-navigation";
 import { RecipeGrid, RecipeSkeleton } from "@/components/RecipeCard";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -144,6 +148,9 @@ export default function RecipesPage() {
     setControlParams(next);
     setParams(next);
   }
+  function filterLabel(category: Category, value: string) {
+    return category === "dietary" ? dietaryDisplayLabel(value) : label(value);
+  }
   function setMine(selected: boolean) {
     const next = new URLSearchParams(params);
     if (selected) next.set("mine", "true");
@@ -191,7 +198,7 @@ export default function RecipesPage() {
                     )
                   }
                 />
-                {label(value)}
+                {filterLabel(category, value)}
               </label>
             ))}
           </fieldset>
@@ -265,7 +272,7 @@ export default function RecipesPage() {
               <Button
                 variant="secondary"
                 key={`${category}-${value}`}
-                aria-label={`Remove ${label(value)} filter`}
+                aria-label={`Remove ${filterLabel(category, value)} filter`}
                 onClick={() =>
                   setSelection(
                     category,
@@ -273,7 +280,7 @@ export default function RecipesPage() {
                   )
                 }
               >
-                {label(value)} ×
+                {filterLabel(category, value)} ×
               </Button>
             )),
         )}

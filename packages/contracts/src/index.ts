@@ -92,6 +92,7 @@ export const createRecipeSchema = z.object({
 });
 
 export const recipeCardSchema = recipeSummarySchema.extend({
+  dietary: z.array(z.string()),
   tags: z.array(z.string()),
 });
 export const recipeDetailSchema = recipeCardSchema.extend({

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import type { RecipeDetail } from "@nosh/contracts";
 import { fetchRecipe, fetchHousehold, RecipeApiError } from "@/lib/api";
-import { label } from "@/lib/recipe-navigation";
+import { dietaryDisplayLabel, label } from "@/lib/recipe-navigation";
 import { CuisineFlag } from "@/components/CuisineFlag";
 import { Button } from "@/components/ui/button";
 import styles from "./Recipes.module.css";
@@ -49,7 +49,7 @@ function RecipeContent({ recipe }: { recipe: RecipeDetail }) {
           <dt>Dietary labels</dt>
           <dd>
             {recipe.dietary.length
-              ? recipe.dietary.map(label).join(", ")
+              ? recipe.dietary.map(dietaryDisplayLabel).join(", ")
               : "None supplied"}
           </dd>
         </div>

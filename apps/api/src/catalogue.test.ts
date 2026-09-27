@@ -55,7 +55,13 @@ describe("recipe catalogue HTTP API", () => {
     expect(list).toMatchObject({
       total: 1,
       nextCursor: null,
-      recipes: [{ id: created.id, tags: ["batch-cook", "quick"] }],
+      recipes: [
+        {
+          id: created.id,
+          dietary: ["vegetarian"],
+          tags: ["batch-cook", "quick"],
+        },
+      ],
     });
   });
 
