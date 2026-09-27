@@ -120,62 +120,6 @@
   gap: 40px;
 }
 
-.dayBars {
-  display: grid;
-  margin: 16px 0;
-  padding: 0;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 12px;
-  list-style: none;
-}
-
-.dayBars li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-}
-
-.barTrack {
-  display: flex;
-  width: 100%;
-  max-width: 36px;
-  height: 108px;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.barTrack > span {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--control-border);
-  border-radius: 2px;
-  background: #edf0eb;
-}
-
-.dayLabel {
-  text-decoration: none;
-}
-
-.chartLegend {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--ink-muted);
-  font-size: 0.8rem;
-}
-
-.chartLegend > span {
-  width: 12px;
-  height: 12px;
-  border: 1px solid var(--control-border);
-  border-radius: 2px;
-  background: #edf0eb;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .recipeSkeleton {
     animation: none;
@@ -211,10 +155,6 @@
     grid-template-columns: 1fr;
     gap: 20px;
   }
-
-  .dayBars {
-    gap: 9px;
-  }
 }
 
 @media (max-width: 350px) {
@@ -229,4 +169,41 @@
   .recipeCard h3 {
     font-size: 1.15rem;
   }
+}
+.mealBars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  max-width: 620px;
+  margin: 16px 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.mealBars li {
+  display: grid;
+  gap: 6px;
+  text-transform: capitalize;
+}
+
+.mealBars strong {
+  font-size: 1.5rem;
+}
+
+.mealBars small {
+  color: var(--ink-muted);
+  font-size: 1rem;
+}
+
+.mealBars progress {
+  width: 100%;
+  height: 7px;
+  accent-color: var(--color-nosh-teal);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.chartNote {
+  color: var(--ink-muted);
+  font-size: 0.8rem;
 }

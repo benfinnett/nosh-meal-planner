@@ -54,14 +54,27 @@ export default function RecipesPage() {
   // stays that way even after the filter is cleared, so it never needs an
   // empty ?dietary= marker in the URL just to remember it was already resolved.
   const [dietaryReady, setDietaryReady] = useState(() => params.has("dietary"));
-  if (!dietaryReady && household.data) {
+  // Derived from render-time values, so resolve it during render rather than in an effect.
+  if (!dietaryReady && params.has("dietary")) {
+    setDietaryReady(true);
+  } else if (
+    !dietaryReady &&
+    household.data &&
+    household.data.dietaryPreferences.length === 0
+  ) {
+    setDietaryReady(true);
+  }
+  // Only the URL rewrite needs an effect, since it syncs with the router after async household data arrives.
+  useEffect(() => {
+    if (dietaryReady || params.has("dietary") || !household.data) return;
+    if (household.data.dietaryPreferences.length === 0) return;
+
     const next = new URLSearchParams(params);
     household.data.dietaryPreferences.forEach((value) =>
       next.append("dietary", value),
     );
-    setDietaryReady(true);
     setParams(next, { replace: true });
-  }
+  }, [dietaryReady, household.data, params, setParams]);
   const urlSearch = params.get("q") ?? "";
   const [search, setSearch] = useState(urlSearch);
   const [previousSearch, setPreviousSearch] = useState(urlSearch);
@@ -219,7 +232,7 @@ export default function RecipesPage() {
           <h1 id="recipes-title">Recipes</h1>
           <p>Find something for your next meal.</p>
         </div>
-        <Button render={<Link to="/recipes/new" />}>
+        <Button nativeButton={false} render={<Link to="/recipes/new" />}>
           <IconBowlSpoon />
           Create recipe
         </Button>
@@ -363,7 +376,10 @@ export default function RecipesPage() {
                         You’ve reached the end of the recipes. Why not create
                         your own?
                       </p>
-                      <Button render={<Link to="/recipes/new" />}>
+                      <Button
+                        nativeButton={false}
+                        render={<Link to="/recipes/new" />}
+                      >
                         <IconBowlSpoon />
                         Create recipe
                       </Button>

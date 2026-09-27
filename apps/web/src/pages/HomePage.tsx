@@ -2,19 +2,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { IconArrowRight } from "@tabler/icons-react";
 import { fetchCatalogue } from "@/lib/api";
+import { fetchPlanner } from "@/lib/planner-api";
 import { RecipeGrid, RecipeSkeleton } from "@/components/RecipeCard";
 import { Button } from "@/components/ui/button";
 import styles from "./HomePage.module.css";
 
-const days = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+const mealTypes = ["breakfast", "lunch", "dinner"] as const;
+const formatDate = (date: string) =>
+  new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${date}T12:00:00Z`));
 
 const selectRandomRecipes = <Recipe,>(recipes: Recipe[]) => {
   const shuffled = [...recipes];
@@ -29,6 +29,14 @@ const selectRandomRecipes = <Recipe,>(recipes: Recipe[]) => {
 };
 
 function HomePage() {
+  const planner = useQuery({
+    queryKey: ["planner", "overview"],
+    queryFn: fetchPlanner,
+  });
+  const week = planner.data?.current;
+  const counts = week?.coverage ?? { breakfast: 0, lunch: 0, dinner: 0 };
+  const planned = mealTypes.reduce((total, type) => total + counts[type], 0);
+
   const recipes = useQuery({
     queryKey: ["recipe-catalogue", "home"],
     queryFn: ({ signal }) =>
@@ -41,7 +49,12 @@ function HomePage() {
       <section aria-labelledby="inspiration-title">
         <div className={styles.sectionHeading}>
           <h1 id="inspiration-title">What’s on the menu?</h1>
-          <Button variant="text" render={<Link to="recipes" />}>
+          <Button
+            variant="text"
+            nativeButton={false}
+            role="link"
+            render={<Link to="recipes" />}
+          >
             View more
             <IconArrowRight size={18} aria-hidden="true" />
           </Button>
@@ -65,34 +78,63 @@ function HomePage() {
       <section className={styles.coverage} aria-labelledby="coverage-title">
         <div>
           <h1 id="coverage-title">This week, at a glance</h1>
-          <h3>0 of 21 meal slots planned</h3>
-          <Button variant="text" render={<Link to="/plan" />}>
-            Create a meal plan
+          {planner.isSuccess && (
+            <>
+              <h3>{planned} of 21 meal slots planned</h3>
+              <p className={styles.chartNote}>
+                {week
+                  ? `${formatDate(week.weekStart)} – ${formatDate(week.weekEnd)}`
+                  : "No active meal plan yet."}
+              </p>
+            </>
+          )}
+          <Button
+            variant="text"
+            nativeButton={false}
+            role="link"
+            render={<Link to="/plan" />}
+          >
+            {week ? "View meal plan" : "Create a meal plan"}
             <IconArrowRight size={18} aria-hidden="true" />
           </Button>
         </div>
         <div>
-          <ul className={styles.dayBars} aria-label="Weekly meal-plan coverage">
-            {days.map((day) => (
-              <li key={day} aria-label={`${day}: 0 of 3 meals planned`}>
-                <span className={styles.barTrack} aria-hidden="true">
-                  <span>B</span>
-                  <span>L</span>
-                  <span>D</span>
-                </span>
-                <abbr
-                  className={styles.dayLabel}
-                  title={day}
-                  aria-hidden="true"
-                >
-                  {day.slice(0, 3)}
-                </abbr>
-              </li>
-            ))}
-          </ul>
-          <p className={styles.chartLegend}>
-            <span aria-hidden="true" /> Unplanned meal slot
-          </p>
+          {planner.isPending && <p role="status">Loading meal plan…</p>}
+          {planner.isError && (
+            <div>
+              <p role="alert">
+                Couldn’t load meal-plan coverage. Please try again.
+              </p>
+              <Button onClick={() => void planner.refetch()}>
+                Retry meal plan
+              </Button>
+            </div>
+          )}
+          {planner.isSuccess && (
+            <>
+              <ul
+                className={styles.mealBars}
+                aria-label="Weekly meal-plan coverage"
+              >
+                {mealTypes.map((type) => {
+                  const label = type[0].toUpperCase() + type.slice(1);
+                  return (
+                    <li key={type}>
+                      <span>{label}</span>
+                      <strong>
+                        {counts[type]} <small>/ 7</small>
+                      </strong>
+                      <progress
+                        aria-label={label}
+                        value={counts[type]}
+                        max={7}
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
         </div>
       </section>
     </div>
