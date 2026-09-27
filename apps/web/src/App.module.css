@@ -29,6 +29,8 @@
 .logoText {
   display: block;
   height: auto;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .logoIcon {
@@ -37,6 +39,32 @@
 
 .logoText {
   width: 148px;
+}
+
+.mastheadNav {
+  display: none;
+  flex-shrink: 0;
+  margin-inline-start: auto;
+  align-items: center;
+  gap: 4px;
+}
+
+.mastheadNavLink {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--surface);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.mastheadNavLink[aria-current="page"],
+.mastheadNavLink:hover {
+  background: color-mix(in srgb, var(--surface) 15%, transparent);
 }
 
 .tagline {
@@ -111,6 +139,36 @@
 
   .page {
     padding: 28px 20px calc(112px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 701px) {
+  .masthead {
+    padding: 20px 32px 0;
+    background: none;
+  }
+
+  .mastheadContent {
+    max-width: 1120px;
+    padding: 14px 32px;
+    border-radius: 999px;
+    background: var(--color-nosh-charcoal);
+  }
+
+  .logoIcon {
+    width: 40px;
+  }
+
+  .logoText {
+    width: 118px;
+  }
+
+  .mastheadNav {
+    display: flex;
+  }
+
+  .bottomNav {
+    display: none;
   }
 }
 

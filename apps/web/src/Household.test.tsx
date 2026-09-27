@@ -7,6 +7,7 @@ import {
   fireEvent,
   render,
   screen,
+  within,
 } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -97,8 +98,11 @@ it("debounces edits, serializes saves, preserves newer drafts and retries failur
   await tick();
   expect(size).toHaveValue(4);
   expect(screen.getByRole("status")).toHaveTextContent("Couldn’t save");
-  fireEvent.click(screen.getByRole("link", { name: "Meal plan" }));
-  fireEvent.click(screen.getByRole("link", { name: "Household" }));
+  const bottomNav = screen.getByRole("navigation", {
+    name: "Main navigation (mobile)",
+  });
+  fireEvent.click(within(bottomNav).getByRole("link", { name: "Meal plan" }));
+  fireEvent.click(within(bottomNav).getByRole("link", { name: "Household" }));
   expect(screen.getByRole("spinbutton")).toHaveValue(4);
   fireEvent.click(screen.getByRole("button", { name: "Retry" }));
   await tick();
@@ -131,9 +135,12 @@ it("cancels invalid pending edits and keeps saving after navigating away", async
   window.dispatchEvent(event);
   expect(event.defaultPrevented).toBe(true);
   fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "6" } });
-  fireEvent.click(screen.getByRole("link", { name: "Meal plan" }));
+  const bottomNav = screen.getByRole("navigation", {
+    name: "Main navigation (mobile)",
+  });
+  fireEvent.click(within(bottomNav).getByRole("link", { name: "Meal plan" }));
   await tick(600);
-  fireEvent.click(screen.getByRole("link", { name: "Household" }));
+  fireEvent.click(within(bottomNav).getByRole("link", { name: "Household" }));
   expect(screen.getByRole("spinbutton")).toHaveValue(6);
   expect(screen.getByRole("status")).toHaveTextContent("Saved");
 });

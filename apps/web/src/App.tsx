@@ -64,6 +64,19 @@ export function App() {
               src="/brand/nosh-logo-text.png"
               alt="Nosh — meal planning platform"
             />
+            <nav className={styles.mastheadNav} aria-label="Main navigation">
+              {navigation.map(({ path, label, icon: Icon }) => (
+                <NavLink
+                  key={path}
+                  to={path}
+                  end={path === "/"}
+                  className={styles.mastheadNavLink}
+                >
+                  <Icon size={20} aria-hidden="true" />
+                  <span>{label}</span>
+                </NavLink>
+              ))}
+            </nav>
           </div>
         </header>
         <main
@@ -90,7 +103,7 @@ export function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
-        <nav className={styles.bottomNav} aria-label="Main navigation">
+        <nav className={styles.bottomNav} aria-label="Main navigation (mobile)">
           <div className={styles.bottomNavItems}>
             {navigation.map(({ path, label, icon: Icon }) => (
               <NavLink
