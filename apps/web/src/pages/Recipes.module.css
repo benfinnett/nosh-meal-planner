@@ -89,6 +89,12 @@
 .actions > .field {
   flex: 1 1 180px;
 }
+.tagActions {
+  align-items: flex-end;
+}
+.tagActions .field input {
+  height: 2.75rem;
+}
 .mobileFilters {
   display: none;
 }

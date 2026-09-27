@@ -80,7 +80,7 @@ export default function CreateRecipePage() {
           : (
               {
                 name: "Recipe name",
-                serves: "Base servings",
+                serves: "Servings",
                 cuisine: "Cuisine (optional)",
                 tags: "Tags (optional)",
               } as Record<string, string>
@@ -186,7 +186,7 @@ export default function CreateRecipePage() {
               ))}
             </datalist>
             <label className={styles.field}>
-              Base servings
+              Servings
               <input
                 type="number"
                 min="1"
@@ -241,7 +241,7 @@ export default function CreateRecipePage() {
           <p className={styles.hint}>
             Choose only labels that apply to this recipe.
           </p>
-          <div className={styles.actions}>
+          <div className={`${styles.actions} ${styles.tagActions}`}>
             <label className={styles.field}>
               Tags (optional)
               <input

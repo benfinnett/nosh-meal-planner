@@ -9,7 +9,7 @@ import {
   label,
 } from "@/lib/recipe-navigation";
 import { RecipeGrid, RecipeSkeleton } from "@/components/RecipeCard";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -19,6 +19,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import styles from "./Recipes.module.css";
+import { IconBowlSpoon } from "@tabler/icons-react";
 
 const categories = ["dietary", "cuisine", "mealType", "tags"] as const;
 type Category = (typeof categories)[number];
@@ -216,20 +217,11 @@ export default function RecipesPage() {
           <h1 id="recipes-title">Recipes</h1>
           <p>Find something for your next meal.</p>
         </div>
-        <Link className={buttonVariants()} to="/recipes/new">
+        <Button render={<Link to="/recipes/new" />}>
+          <IconBowlSpoon />
           Create recipe
-        </Link>
+        </Button>
       </div>
-      <label className={styles.field}>
-        Search recipes
-        <input
-          type="search"
-          maxLength={200}
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search by recipe name"
-        />
-      </label>
       <div className={styles.desktopFilters}>{filters()}</div>
       <div className={styles.mobileFilters}>
         <Sheet>
@@ -246,6 +238,16 @@ export default function RecipesPage() {
           </SheetContent>
         </Sheet>
       </div>
+      <label className={styles.field}>
+        Search recipes
+        <input
+          type="search"
+          maxLength={200}
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Search by recipe name"
+        />
+      </label>
       {options.isError && (
         <p role="alert">
           Couldn’t load filter options.{" "}
@@ -351,10 +353,16 @@ export default function RecipesPage() {
                   </Button>
                 ) : (
                   cards.length > 0 && (
-                    <p>
-                      You’ve reached the end of the recipes. Why not create your
-                      own?
-                    </p>
+                    <>
+                      <p>
+                        You’ve reached the end of the recipes. Why not create
+                        your own?
+                      </p>
+                      <Button render={<Link to="/recipes/new" />}>
+                        <IconBowlSpoon />
+                        Create recipe
+                      </Button>
+                    </>
                   )
                 )}
               </div>
