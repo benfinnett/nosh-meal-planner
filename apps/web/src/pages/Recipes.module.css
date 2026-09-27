@@ -62,6 +62,10 @@
   font-weight: 700;
   margin-bottom: 8px;
 }
+.desktopFilters .filterGroups fieldset {
+  max-height: 220px;
+  overflow-y: auto;
+}
 .check {
   display: flex;
   gap: 8px;

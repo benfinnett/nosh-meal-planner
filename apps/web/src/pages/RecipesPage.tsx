@@ -257,15 +257,6 @@ export default function RecipesPage() {
         >
           Clear filters
         </Button>
-        <Button
-          variant="text"
-          disabled={!household.data}
-          onClick={() =>
-            setSelection("dietary", household.data?.dietaryPreferences ?? [])
-          }
-        >
-          Use household preferences
-        </Button>
       </div>
       {household.isError && (
         <div role="alert">
@@ -293,9 +284,6 @@ export default function RecipesPage() {
           )}
           {recipes.data && (
             <>
-              <p role="status">
-                {recipes.data.pages[0].total} recipes · Alphabetical A–Z
-              </p>
               {cards.length ? (
                 <RecipeGrid recipes={cards} />
               ) : (
@@ -327,7 +315,7 @@ export default function RecipesPage() {
                   </Button>
                 ) : (
                   cards.length > 0 && (
-                    <p>You’ve reached the end of the recipes.</p>
+                    <p>You’ve reached the end of the recipes. Why not create your own?</p>
                   )
                 )}
               </div>
