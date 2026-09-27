@@ -9,17 +9,9 @@
   flex-direction: column;
   padding: 20px;
   border: 1px solid var(--rule);
-  border-top: 4px solid var(--color-nosh-green);
+  border-top: 4px solid var(--color-primary);
   border-radius: var(--radius-lg);
   background: var(--paper);
-}
-
-.recipeCard:nth-child(3n + 2) {
-  border-top-color: var(--color-nosh-leaf);
-}
-
-.recipeCard:nth-child(3n) {
-  border-top-color: var(--color-nosh-coral);
 }
 
 .recipeTopline {
