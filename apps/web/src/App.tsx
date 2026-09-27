@@ -48,12 +48,16 @@ export function App() {
 
     if (previousPath.current !== pathname) {
       previousPath.current = pathname;
+      main.current?.focus({ preventScroll: true });
     }
   }, [pathname]);
 
   return (
     <SnackbarProvider>
       <HouseholdProvider>
+        <a className={styles.skipLink} href="#main-content" tabIndex={0}>
+          Skip to main content
+        </a>
         <header className={styles.masthead}>
           <div className={styles.mastheadContent}>
             <img

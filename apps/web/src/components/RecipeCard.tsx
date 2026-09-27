@@ -22,6 +22,7 @@ export function RecipeCard({
     <article className={styles.recipeCard}>
       <div className={styles.recipeTopline}>
         <p
+          role="img"
           className={styles.recipeServings}
           aria-label={`Serves ${recipe.serves} ${recipe.serves === 1 ? "person" : "people"}`}
         >
