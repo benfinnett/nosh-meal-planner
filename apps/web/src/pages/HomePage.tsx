@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { IconArrowRight, IconChefHat, IconUser } from "@tabler/icons-react";
 import { fetchRecipeSummaries } from "@/lib/api";
 import { CuisineFlag } from "@/components/CuisineFlag";
+import { Button } from "@/components/ui/button";
 import styles from "./HomePage.module.css";
 
 const days = [
@@ -26,9 +27,13 @@ function HomePage() {
       <section aria-labelledby="inspiration-title">
         <div className={styles.sectionHeading}>
           <h1>What’s on the menu?</h1>
-          <Link className={styles.sectionLink} to="/recipes">
+          <Button
+            variant="text"
+            className={styles.sectionLink}
+            render={<Link to="/recipes" />}
+          >
             View more <IconArrowRight size={18} aria-hidden="true" />
-          </Link>
+          </Button>
         </div>
         {recipes.isPending && (
           <div role="status">
@@ -58,12 +63,9 @@ function HomePage() {
         {recipes.isError && (
           <div className={styles.feedMessage}>
             <p role="alert">Couldn’t load recipes. Please try again.</p>
-            <button
-              className={styles.retryButton}
-              onClick={() => void recipes.refetch()}
-            >
+            <Button type="button" onClick={() => void recipes.refetch()}>
               Try again
-            </button>
+            </Button>
           </div>
         )}
         {recipes.isSuccess &&

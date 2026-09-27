@@ -12,6 +12,7 @@ import {
   statusSchema,
   errorSchema,
   recipeSummariesSchema,
+  householdSchema,
 } from "@nosh/contracts";
 import type { Store } from "./db/index.js";
 
@@ -75,6 +76,21 @@ export async function createApp(store: Store, development = false) {
     );
 
   app.addHook("onClose", async () => store.close());
+  app.get(
+    "/api/household",
+    { schema: { response: { 200: householdSchema, 500: errorSchema } } },
+    async () => store.household(),
+  );
+  app.put(
+    "/api/household",
+    {
+      schema: {
+        body: householdSchema,
+        response: { 200: householdSchema, 400: errorSchema, 500: errorSchema },
+      },
+    },
+    async (request) => store.saveHousehold(request.body),
+  );
 
   app.get(
     "/api/recipes",

@@ -1,5 +1,35 @@
 import { z } from "zod";
 
+export const dietaryPreferences = [
+  "vegetarian",
+  "vegan",
+  "dairy-free",
+  "gluten-free",
+] as const;
+
+export const householdLocations = [
+  "england",
+  "wales",
+  "northern-ireland",
+  "scotland",
+  "outside-uk",
+  "unspecified",
+] as const;
+
+export const householdSchema = z.object({
+  householdSize: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+  dietaryPreferences: z.array(z.enum(dietaryPreferences)),
+  location: z.enum(householdLocations),
+});
+
+export type Household = z.infer<typeof householdSchema>;
+
+export const defaultHousehold: Household = {
+  householdSize: 1,
+  dietaryPreferences: [],
+  location: "england",
+};
+
 // Public HTTP shapes only; development consumers watch these sources directly.
 export const healthSchema = z.object({ status: z.literal("ok") });
 

@@ -7,12 +7,19 @@ import { fileURLToPath } from "node:url";
 import { asc, count, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import {
+  defaultHousehold,
+  dietaryPreferences,
+  type Household,
+} from "@nosh/contracts";
+import {
   recipeDietary,
   recipeIngredients,
   recipeMealTypes,
   recipeMethodSteps,
   recipeTags,
   recipes,
+  householdSettings,
+  householdDietary,
 } from "./schema.js";
 
 const migrationsFolder = fileURLToPath(
@@ -56,6 +63,59 @@ export function openStore(path: string) {
   }
 
   return {
+    household(): Household {
+      const row = db
+        .select()
+        .from(householdSettings)
+        .where(eq(householdSettings.id, 1))
+        .get();
+      if (!row) return { ...defaultHousehold, dietaryPreferences: [] };
+      const selected = db
+        .select()
+        .from(householdDietary)
+        .where(eq(householdDietary.householdId, 1))
+        .all();
+      return {
+        householdSize: row.householdSize,
+        location: row.location,
+        dietaryPreferences: dietaryPreferences.filter((value) =>
+          selected.some((entry) => entry.preference === value),
+        ),
+      };
+    },
+
+    saveHousehold(input: Household): Household {
+      const selected = dietaryPreferences.filter((value) =>
+        input.dietaryPreferences.includes(value),
+      );
+      sqlite.transaction(() => {
+        db.insert(householdSettings)
+          .values({
+            id: 1,
+            householdSize: input.householdSize,
+            location: input.location,
+          })
+          .onConflictDoUpdate({
+            target: householdSettings.id,
+            set: {
+              householdSize: input.householdSize,
+              location: input.location,
+            },
+          })
+          .run();
+        db.delete(householdDietary)
+          .where(eq(householdDietary.householdId, 1))
+          .run();
+        if (selected.length)
+          db.insert(householdDietary)
+            .values(
+              selected.map((preference) => ({ householdId: 1, preference })),
+            )
+            .run();
+      })();
+      return { ...input, dietaryPreferences: selected };
+    },
+
     seed() {
       const input = JSON.parse(
         readFileSync(

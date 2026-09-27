@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { IconArrowLeft } from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
 import styles from "./PlaceholderPage.module.css";
 
 function PlaceholderPage({
@@ -13,10 +14,10 @@ function PlaceholderPage({
     <section className={styles.page}>
       <h1>{title}</h1>
       <p>{description} is still cooking in the kitchen.</p>
-      <Link className={styles.backLink} to="/">
+      <Button variant="text" className="mt-6" render={<Link to="/" />}>
         <IconArrowLeft size={18} aria-hidden="true" />
         Back to home
-      </Link>
+      </Button>
     </section>
   );
 }
