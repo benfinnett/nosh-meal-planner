@@ -36,7 +36,7 @@ it("shows loading and a truthful seven-day empty chart", () => {
     vi.fn(() => new Promise(() => {})),
   );
   mount();
-  expect(screen.getByText("Loading recipes…")).toBeInTheDocument();
+  expect(screen.getByRole("status")).toHaveTextContent("Loading recipes");
   expect(screen.getByText("0 of 21 meal slots planned")).toBeInTheDocument();
   const chart = screen.getByRole("list", { name: "Weekly meal-plan coverage" });
   expect(within(chart).getAllByRole("listitem")).toHaveLength(7);
@@ -44,17 +44,25 @@ it("shows loading and a truthful seven-day empty chart", () => {
     expect(day).toHaveAccessibleName(/0 of 3 meals planned/);
 });
 
-it("shows real summaries and navigates to each explicit placeholder", async () => {
+it("shows real summaries and navigates to placeholders and household settings", async () => {
   vi.stubGlobal(
     "fetch",
-    vi.fn().mockResolvedValue({
+    vi.fn().mockImplementation(async (url) => ({
       ok: true,
-      json: async () => ({
-        recipes: [
-          { id: "r1", name: "Lentil soup", cuisine: "British", serves: 4 },
-        ],
-      }),
-    }),
+      json: async () =>
+        url === "/api/household"
+          ? { householdSize: 1, dietaryPreferences: [], location: "england" }
+          : {
+              recipes: [
+                {
+                  id: "r1",
+                  name: "Lentil soup",
+                  cuisine: "British",
+                  serves: 4,
+                },
+              ],
+            },
+    })),
   );
   mount();
   expect(await screen.findByText("Lentil soup")).toBeInTheDocument();
@@ -66,7 +74,13 @@ it("shows real summaries and navigates to each explicit placeholder", async () =
   for (const name of ["Meal plan", "Recipes", "Household"]) {
     fireEvent.click(within(nav).getByRole("link", { name }));
     expect(screen.getByRole("heading", { level: 1, name })).toBeInTheDocument();
-    expect(screen.getByText(/isn’t available yet/)).toBeInTheDocument();
+    if (name === "Household") {
+      expect(await screen.findByRole("spinbutton")).toHaveValue(1);
+    } else {
+      expect(
+        screen.getByText(/is still cooking in the kitchen/),
+      ).toBeInTheDocument();
+    }
     expect(within(nav).getByRole("link", { name })).toHaveAttribute(
       "aria-current",
       "page",

@@ -5,9 +5,11 @@ test("homepage, keyboard navigation and responsive layout", async ({
 }) => {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Recipe inspiration" }),
+    page.getByRole("heading", { name: "What’s on the menu?" }),
   ).toBeVisible();
-  await expect(page.locator(".recipe-grid article").first()).toBeVisible();
+  await expect(
+    page.getByRole("article").first().getByRole("heading"),
+  ).toBeVisible();
   await expect(page.getByText("0 of 21 meal slots planned")).toBeVisible();
   await expect(
     page
@@ -20,16 +22,11 @@ test("homepage, keyboard navigation and responsive layout", async ({
     ),
   ).toBe(true);
   await page.keyboard.press("Tab");
-  await expect(
-    page.getByRole("link", { name: "Skip to content" }),
-  ).toBeFocused();
-  await page.keyboard.press("Enter");
-  await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: /View more/ })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/recipes$/);
   for (const [name, path] of [
-    ["Meal plan", "meal-plan"],
+    ["Meal plan", "plan"],
     ["Household", "household"],
     ["Home", ""],
   ]) {

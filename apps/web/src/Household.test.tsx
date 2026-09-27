@@ -1,0 +1,176 @@
+import React from "react";
+import "@testing-library/jest-dom/vitest";
+import { afterEach, expect, it, vi } from "vitest";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { App } from "./App";
+
+const initial = {
+  householdSize: 1,
+  dietaryPreferences: [],
+  location: "england",
+};
+function mount() {
+  render(
+    <QueryClientProvider
+      client={
+        new QueryClient({ defaultOptions: { queries: { retry: false } } })
+      }
+    >
+      <MemoryRouter initialEntries={["/household"]}>
+        <App />
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+}
+async function tick(ms = 0) {
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(ms);
+  });
+}
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+});
+
+it("shows a skeleton without editable defaults, then recovers from a loading failure", async () => {
+  const fetch = vi
+    .fn()
+    .mockRejectedValueOnce(new Error("offline"))
+    .mockResolvedValue({ ok: true, json: async () => initial });
+  vi.stubGlobal("fetch", fetch);
+  mount();
+  expect(screen.getByRole("status")).toHaveTextContent(
+    "Loading household settings",
+  );
+  expect(screen.queryByRole("spinbutton")).not.toBeInTheDocument();
+  expect(screen.queryByText("NHS Healthy Start")).not.toBeInTheDocument();
+  fireEvent.click(await screen.findByRole("button", { name: "Try again" }));
+  expect(await screen.findByRole("spinbutton")).toHaveValue(1);
+  expect(screen.getByRole("combobox")).toHaveValue("england");
+  expect(fetch).toHaveBeenCalledTimes(2);
+});
+
+it("debounces edits, serializes saves, preserves newer drafts and retries failures across navigation", async () => {
+  vi.useFakeTimers();
+  let finish!: (value: unknown) => void;
+  const fetch = vi
+    .fn()
+    .mockResolvedValueOnce({ ok: true, json: async () => initial })
+    .mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    )
+    .mockRejectedValueOnce(new Error("offline"))
+    .mockImplementation(async (_url, options) => ({
+      ok: true,
+      json: async () => JSON.parse(options.body),
+    }));
+  vi.stubGlobal("fetch", fetch);
+  mount();
+  await tick();
+  await tick(1);
+  const size = screen.getByRole("spinbutton");
+  fireEvent.change(size, { target: { value: "2" } });
+  await tick(400);
+  fireEvent.change(size, { target: { value: "3" } });
+  await tick(599);
+  expect(fetch).toHaveBeenCalledTimes(1);
+  await tick(1);
+  expect(fetch).toHaveBeenCalledTimes(2);
+  fireEvent.change(size, { target: { value: "4" } });
+  await tick(600);
+  expect(fetch).toHaveBeenCalledTimes(2);
+  await act(async () =>
+    finish({ ok: true, json: async () => ({ ...initial, householdSize: 3 }) }),
+  );
+  await tick();
+  expect(size).toHaveValue(4);
+  expect(screen.getByRole("status")).toHaveTextContent("Couldn’t save");
+  fireEvent.click(screen.getByRole("link", { name: "Meal plan" }));
+  fireEvent.click(screen.getByRole("link", { name: "Household" }));
+  expect(screen.getByRole("spinbutton")).toHaveValue(4);
+  fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+  await tick();
+  expect(screen.getByRole("status")).toHaveTextContent("Saved");
+  expect(JSON.parse(fetch.mock.calls[3][1].body).householdSize).toBe(4);
+});
+
+it("cancels invalid pending edits and keeps saving after navigating away", async () => {
+  vi.useFakeTimers();
+  const fetch = vi
+    .fn()
+    .mockResolvedValueOnce({ ok: true, json: async () => initial })
+    .mockImplementation(async (_url, options) => ({
+      ok: true,
+      json: async () => JSON.parse(options.body),
+    }));
+  vi.stubGlobal("fetch", fetch);
+  mount();
+  await tick();
+  await tick(1);
+  fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "5" } });
+  fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "" } });
+  await tick(600);
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(screen.getByRole("spinbutton")).toHaveAttribute(
+    "aria-invalid",
+    "true",
+  );
+  const event = new Event("beforeunload", { cancelable: true });
+  window.dispatchEvent(event);
+  expect(event.defaultPrevented).toBe(true);
+  fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "6" } });
+  fireEvent.click(screen.getByRole("link", { name: "Meal plan" }));
+  await tick(600);
+  fireEvent.click(screen.getByRole("link", { name: "Household" }));
+  expect(screen.getByRole("spinbutton")).toHaveValue(6);
+  expect(screen.getByRole("status")).toHaveTextContent("Saved");
+});
+
+it("supports combined preferences and all location-specific information", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn().mockResolvedValue({ ok: true, json: async () => initial }),
+  );
+  mount();
+  await screen.findByRole("spinbutton");
+  for (const label of ["Vegetarian", "Vegan", "Dairy-free", "Gluten-free"]) {
+    fireEvent.click(screen.getByLabelText(label));
+    expect(screen.getByLabelText(label)).toBeChecked();
+  }
+  for (const location of ["england", "wales", "northern-ireland"]) {
+    fireEvent.change(screen.getByRole("combobox"), {
+      target: { value: location },
+    });
+    expect(
+      screen.getByRole("link", { name: /Check eligibility/ }),
+    ).toHaveAttribute("href", "https://www.healthystart.nhs.uk/");
+  }
+  fireEvent.change(screen.getByRole("combobox"), {
+    target: { value: "scotland" },
+  });
+  expect(
+    screen.getByRole("link", { name: /Find out about Best Start Foods/ }),
+  ).toHaveAttribute("target", "_blank");
+  for (const location of ["outside-uk", "unspecified"]) {
+    fireEvent.change(screen.getByRole("combobox"), {
+      target: { value: location },
+    });
+    expect(
+      screen.queryByRole("heading", {
+        name: /NHS Healthy Start|Best Start Foods/,
+      }),
+    ).not.toBeInTheDocument();
+  }
+});
