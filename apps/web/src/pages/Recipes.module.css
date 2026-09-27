@@ -1,0 +1,251 @@
+.page {
+  min-width: 0;
+}
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 16px 0 24px;
+}
+.heading p,
+.hint {
+  color: var(--ink-muted);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  min-width: 0;
+}
+.field input,
+.field textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font: inherit;
+  font-weight: 400;
+  background: var(--paper);
+  color: var(--color-nosh-charcoal);
+}
+.field input:focus-visible,
+.field textarea:focus-visible,
+.check input:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+.field textarea {
+  resize: vertical;
+}
+.field [aria-invalid="true"] {
+  border-color: var(--danger);
+}
+.filterGroups {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  margin: 24px 0;
+  padding-block: 20px;
+  border-block: 1px solid var(--rule);
+}
+.filterGroups fieldset,
+.inlineChoices {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.filterGroups legend,
+.inlineChoices legend {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.check {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 36px;
+  overflow-wrap: anywhere;
+}
+.check input {
+  accent-color: var(--focus);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.actions {
+  display: flex;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-block: 16px;
+}
+.actions > .field {
+  flex: 1 1 180px;
+}
+.mobileFilters {
+  display: none;
+}
+.filterSheet {
+  overflow-y: auto;
+  padding: 32px 20px;
+}
+.filterSheet .filterGroups {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.loadMore {
+  text-align: center;
+  padding: 28px 0;
+}
+.metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-block: 20px;
+}
+.metadata dt {
+  font-weight: 700;
+}
+.metadata dd {
+  margin: 4px 0 0;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+}
+.tags li {
+  padding: 4px 10px;
+  background: #eef6f0;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+.scaling {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-block: 24px;
+  border-block: 1px solid var(--rule);
+  margin-block: 24px;
+}
+.scaling .field {
+  max-width: 120px;
+}
+.detailColumns {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 48px;
+}
+.ingredients {
+  list-style: none;
+  padding: 0;
+  margin-top: 16px;
+}
+.ingredients li {
+  border-bottom: 1px solid var(--rule);
+  padding-block: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.method {
+  padding-left: 28px;
+}
+.method li {
+  padding-left: 10px;
+  margin-bottom: 24px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.method li::marker {
+  color: var(--focus);
+  font-weight: 700;
+}
+.recipeForm {
+  max-width: 800px;
+  margin-top: 28px;
+}
+.recipeForm > fieldset {
+  padding: 20px 0 28px;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  min-width: 0;
+}
+.recipeForm > fieldset > legend {
+  font-family: Nunito, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  padding-right: 16px;
+}
+.formColumns {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-block: 20px;
+}
+.inlineChoices {
+  display: flex;
+  gap: 8px 24px;
+  flex-wrap: wrap;
+  margin-block: 20px 8px;
+}
+.formRow {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 16px;
+}
+.ingredientFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+.error {
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+@media (max-width: 700px) {
+  .heading {
+    align-items: start;
+    flex-wrap: wrap;
+  }
+  .desktopFilters {
+    display: none;
+  }
+  .mobileFilters {
+    display: block;
+    margin-top: 16px;
+  }
+  .detailColumns {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .ingredientFields {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .ingredientFields > :last-child {
+    grid-column: 1 / -1;
+  }
+  .check {
+    min-height: 44px;
+  }
+}
+@media (max-width: 350px) {
+  .formColumns {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .filterSheet {
+    animation: none;
+    transition: none;
+  }
+}

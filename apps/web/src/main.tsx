@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "@fontsource/nunito/latin-700.css";
@@ -12,6 +12,7 @@ import { App } from "./App";
 const client = new QueryClient({
   defaultOptions: { queries: { retry: false } },
 });
+const router = createBrowserRouter([{ path: "*", element: <App /> }]);
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
@@ -21,11 +22,9 @@ if (!rootElement) {
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <QueryClientProvider client={client}>
-      <BrowserRouter>
-        <TooltipProvider>
-          <App />
-        </TooltipProvider>
-      </BrowserRouter>
+      <TooltipProvider>
+        <RouterProvider router={router} />
+      </TooltipProvider>
     </QueryClientProvider>
   </React.StrictMode>,
 );

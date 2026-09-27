@@ -13,6 +13,11 @@ import {
   errorSchema,
   recipeSummariesSchema,
   householdSchema,
+  catalogueQuerySchema,
+  recipeCatalogueSchema,
+  recipeFilterOptionsSchema,
+  recipeDetailSchema,
+  createRecipeSchema,
 } from "@nosh/contracts";
 import type { Store } from "./db/index.js";
 
@@ -96,6 +101,68 @@ export async function createApp(store: Store, development = false) {
     "/api/recipes",
     { schema: { response: { 200: recipeSummariesSchema, 500: errorSchema } } },
     async () => ({ recipes: store.recipeSummaries() }),
+  );
+
+  app.get(
+    "/api/recipes/catalogue",
+    {
+      schema: {
+        querystring: catalogueQuerySchema,
+        response: {
+          200: recipeCatalogueSchema,
+          400: errorSchema,
+          500: errorSchema,
+        },
+      },
+    },
+    async (request) => store.recipeCatalogue(request.query),
+  );
+
+  app.get(
+    "/api/recipes/filter-options",
+    {
+      schema: {
+        response: { 200: recipeFilterOptionsSchema, 500: errorSchema },
+      },
+    },
+    async () => store.recipeFilterOptions(),
+  );
+
+  app.get<{ Params: { id: string } }>(
+    "/api/recipes/:id",
+    {
+      schema: {
+        response: {
+          200: recipeDetailSchema,
+          404: errorSchema,
+          500: errorSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const recipe = store.recipeDetail(request.params.id);
+      if (!recipe)
+        return reply
+          .status(404)
+          .send({ code: "NOT_FOUND", message: "Recipe not found." });
+      return recipe;
+    },
+  );
+
+  app.post(
+    "/api/recipes",
+    {
+      schema: {
+        body: createRecipeSchema,
+        response: {
+          201: recipeDetailSchema,
+          400: errorSchema,
+          500: errorSchema,
+        },
+      },
+    },
+    async (request, reply) =>
+      reply.status(201).send(store.createRecipe(request.body)),
   );
 
   return app;

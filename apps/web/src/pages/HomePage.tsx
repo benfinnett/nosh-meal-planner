@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { IconArrowRight, IconChefHat, IconUser } from "@tabler/icons-react";
-import { fetchRecipeSummaries } from "@/lib/api";
-import { CuisineFlag } from "@/components/CuisineFlag";
-import { Button } from "@/components/ui/button";
+import { IconArrowRight } from "@tabler/icons-react";
+import { fetchCatalogue } from "@/lib/api";
+import { RecipeGrid, RecipeSkeleton } from "@/components/RecipeCard";
+import { Button, buttonVariants } from "@/components/ui/button";
 import styles from "./HomePage.module.css";
 
 const days = [
@@ -16,50 +16,39 @@ const days = [
   "Sunday",
 ];
 
+const selectRandomRecipes = <Recipe,>(recipes: Recipe[]) => {
+  const shuffled = [...recipes];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [
+      shuffled[randomIndex],
+      shuffled[index],
+    ];
+  }
+  return shuffled.slice(0, 6);
+};
+
 function HomePage() {
   const recipes = useQuery({
-    queryKey: ["recipe-summaries"],
-    queryFn: fetchRecipeSummaries,
+    queryKey: ["recipe-catalogue", "home"],
+    queryFn: ({ signal }) =>
+      fetchCatalogue(new URLSearchParams({ limit: "100" }), signal),
+    select: (data) => ({ ...data, recipes: selectRandomRecipes(data.recipes) }),
   });
 
   return (
     <>
       <section aria-labelledby="inspiration-title">
         <div className={styles.sectionHeading}>
-          <h1>What’s on the menu?</h1>
-          <Button
-            variant="text"
-            className={styles.sectionLink}
-            render={<Link to="/recipes" />}
+          <h1 id="inspiration-title">What’s on the menu?</h1>
+          <Link
+            to="/recipes"
+            className={`${buttonVariants({ variant: "text" })} ${styles.sectionLink}`}
           >
             View more <IconArrowRight size={18} aria-hidden="true" />
-          </Button>
+          </Link>
         </div>
-        {recipes.isPending && (
-          <div role="status">
-            <span className="sr-only">Loading recipes</span>
-            <div className={styles.recipeGrid} aria-hidden="true">
-              {Array.from({ length: 6 }, (_, index) => (
-                <article className={styles.recipeCard} key={index}>
-                  <div className={styles.recipeTopline}>
-                    <span
-                      className={`${styles.recipeSkeleton} ${styles.skeletonNumber}`}
-                    />
-                    <span
-                      className={`${styles.recipeSkeleton} ${styles.skeletonIcons}`}
-                    />
-                  </div>
-                  <div
-                    className={`${styles.recipeSkeleton} ${styles.skeletonTitle}`}
-                  />
-                  <div
-                    className={`${styles.recipeSkeleton} ${styles.skeletonDetails}`}
-                  />
-                </article>
-              ))}
-            </div>
-          </div>
-        )}
+        {recipes.isPending && <RecipeSkeleton />}
         {recipes.isError && (
           <div className={styles.feedMessage}>
             <p role="alert">Couldn’t load recipes. Please try again.</p>
@@ -69,41 +58,10 @@ function HomePage() {
           </div>
         )}
         {recipes.isSuccess &&
-          (recipes.data.length === 0 ? (
+          (recipes.data.recipes.length === 0 ? (
             <p className={styles.feedMessage}>No recipes to show yet.</p>
           ) : (
-            <div className={styles.recipeGrid}>
-              {recipes.data.slice(0, 6).map((recipe, index) => (
-                <article className={styles.recipeCard} key={recipe.id}>
-                  <div className={styles.recipeTopline}>
-                    <span className={styles.recipeNumber}>
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className={styles.recipeCuisineIcons}>
-                      <CuisineFlag cuisine={recipe.cuisine} />
-                      <IconChefHat size={28} aria-hidden="true" />
-                    </span>
-                  </div>
-                  <h3>{recipe.name}</h3>
-                  <p>
-                    <span
-                      className={styles.recipeServings}
-                      aria-label={`Serves ${recipe.serves} ${recipe.serves === 1 ? "person" : "people"}`}
-                    >
-                      <span
-                        className={styles.recipeServingIcons}
-                        aria-hidden="true"
-                      >
-                        {Array.from({ length: recipe.serves }, (_, person) => (
-                          <IconUser key={person} size={16} />
-                        ))}
-                      </span>
-                      <span aria-hidden="true">x{recipe.serves}</span>
-                    </span>
-                  </p>
-                </article>
-              ))}
-            </div>
+            <RecipeGrid recipes={recipes.data.recipes} />
           ))}
       </section>
       <section className={styles.coverage} aria-labelledby="coverage-title">

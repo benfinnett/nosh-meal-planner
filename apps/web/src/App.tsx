@@ -1,6 +1,9 @@
 ﻿import { useEffect, useRef } from "react";
 import HomePage from "@/pages/HomePage";
 import HouseholdPage from "@/pages/HouseholdPage";
+import RecipesPage from "@/pages/RecipesPage";
+import RecipeDetailPage from "@/pages/RecipeDetailPage";
+import CreateRecipePage from "@/pages/CreateRecipePage";
 import { HouseholdProvider } from "@/HouseholdProvider";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import { SnackbarProvider } from "@/components/Snackbar";
@@ -33,7 +36,12 @@ export function App() {
 
   useEffect(() => {
     const title =
-      navigation.find((item) => item.path === pathname)?.label ?? "Home";
+      pathname === "/recipes/new"
+        ? "Create recipe"
+        : pathname.startsWith("/recipes/")
+          ? "Recipe"
+          : (navigation.find((item) => item.path === pathname)?.label ??
+            "Home");
     document.title = `${title} | Nosh`;
 
     if (previousPath.current !== pathname) {
@@ -75,15 +83,9 @@ export function App() {
                 />
               }
             />
-            <Route
-              path="/recipes"
-              element={
-                <PlaceholderPage
-                  title="Recipes"
-                  description="The recipe catalogue"
-                />
-              }
-            />
+            <Route path="/recipes" element={<RecipesPage />} />
+            <Route path="/recipes/new" element={<CreateRecipePage />} />
+            <Route path="/recipes/:id" element={<RecipeDetailPage />} />
             <Route path="/household" element={<HouseholdPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
