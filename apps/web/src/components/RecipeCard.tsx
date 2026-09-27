@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { IconUser } from "@tabler/icons-react";
+import { IconUser, IconUsers } from "@tabler/icons-react";
 import type { RecipeCard as RecipeCardData } from "@nosh/contracts";
 import { CuisineFlag } from "./CuisineFlag";
 import {
@@ -19,11 +19,12 @@ export function RecipeCard({ recipe }: { recipe: RecipeCardData }) {
           aria-label={`Serves ${recipe.serves} ${recipe.serves === 1 ? "person" : "people"}`}
         >
           <span className={styles.recipeServingIcons} aria-hidden="true">
-            {Array.from(
-              { length: Math.min(recipe.serves, 100) },
-              (_, person) => (
+            {recipe.serves > 6 ? (
+              <IconUsers size={16} />
+            ) : (
+              Array.from({ length: recipe.serves }, (_, person) => (
                 <IconUser key={person} size={16} />
-              ),
+              ))
             )}
           </span>
           <span aria-hidden="true">x{recipe.serves}</span>
