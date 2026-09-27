@@ -1,6 +1,6 @@
 import React from "react";
 import "@testing-library/jest-dom/vitest";
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import {
   act,
   cleanup,
@@ -36,6 +36,22 @@ async function tick(ms = 0) {
     await vi.advanceTimersByTimeAsync(ms);
   });
 }
+beforeEach(() => {
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: vi.fn().mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+});
+
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
@@ -161,12 +177,21 @@ it("supports combined preferences and all location-specific information", async 
       target: { value: location },
     });
     expect(
-      screen.getByRole("link", { name: /Check eligibility/ }),
+      screen.getByRole("link", { name: /Find out about NHS Healthy Start/ }),
     ).toHaveAttribute("href", "https://www.healthystart.nhs.uk/");
+    expect(
+      screen.getByRole("link", { name: /Find out about NHS Healthy Start/ }),
+    ).toHaveAttribute("target", "_blank");
   }
   fireEvent.change(screen.getByRole("combobox"), {
     target: { value: "scotland" },
   });
+  expect(
+    screen.getByRole("link", { name: /Find out about Best Start Foods/ }),
+  ).toHaveAttribute(
+    "href",
+    "https://www.mygov.scot/best-start-grant-best-start-foods",
+  );
   expect(
     screen.getByRole("link", { name: /Find out about Best Start Foods/ }),
   ).toHaveAttribute("target", "_blank");

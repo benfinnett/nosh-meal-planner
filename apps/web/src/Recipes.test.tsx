@@ -103,7 +103,7 @@ function mockApi(
   return fetch;
 }
 
-it("initialises household filters, preserves explicit clearing, and shows dietary chips before three card tags", async () => {
+it("initialises household filters, clears the dietary param on clear, and shows dietary chips before three card tags", async () => {
   const fetch = mockApi();
   mount("/recipes");
   expect(
@@ -129,8 +129,9 @@ it("initialises household filters, preserves explicit clearing, and shows dietar
   expect(screen.getByLabelText("Vegan (Ve)")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Clear filters" }));
   await waitFor(() =>
-    expect(screen.getByTestId("location")).toHaveTextContent("dietary="),
+    expect(screen.getByTestId("location")).toHaveTextContent("/recipes"),
   );
+  expect(screen.getByTestId("location")).not.toHaveTextContent("dietary");
   expect(fetch.mock.calls.some(([, init]) => init?.method === "PUT")).toBe(
     false,
   );
